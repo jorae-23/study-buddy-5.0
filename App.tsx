@@ -32,6 +32,10 @@ function App() {
     return tableNum
   }
 
+  async function updateTableStatus(tableNum : number | undefined){
+    await axios.put(`http://10.20.45.60:3001/data/api/g/c/${tableNum}`)
+  }
+  
   async function reserveTable() {
     try {
       Alert.alert('Scan button pressed', 'looking for tag to scan')
@@ -45,6 +49,7 @@ function App() {
       const tagID = tag?.id
       const tagNum =  await getTagNumber(tagID)
       const tableNum = await getTableNum(tagNum)
+      await updateTableStatus(tableNum)
       Alert.alert(`You have reserved table ${tableNum} from scanning tag ${tagNum}`)
 
     } catch (ex) {
