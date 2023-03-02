@@ -16,7 +16,7 @@ function App() {
         const response = await axios.get(`http://10.20.45.60:3001/data/api/${tagId}`)
         tagNum = response.data[0].TagNum
     } catch(error) {
-        console.warn('something went wrong', error)
+        console.warn('something went wrong getting the tag number', error)
     }
     return tagNum
   }
@@ -27,7 +27,7 @@ function App() {
         const response = await axios.get(`http://10.20.45.60:3001/data/api/g/${tagNum}`)
         tableNum = response.data[0].TableNum
     } catch(error) {
-        console.warn('something went wrong', error)
+        console.warn('something went wrong getting the table number', error)
     }
     return tableNum
   }
@@ -35,7 +35,7 @@ function App() {
   async function updateTableStatus(tableNum : number | undefined){
     await axios.put(`http://10.20.45.60:3001/data/api/g/c/${tableNum}`)
   }
-  
+
   async function reserveTable() {
     try {
       Alert.alert('Scan button pressed', 'looking for tag to scan')
