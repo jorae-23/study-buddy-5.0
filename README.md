@@ -6,6 +6,5 @@ share their location with friends, or advertise the course they are studying for
 
 ## Technical Details
 * Frontend Framework = React Native
-* Backend Framework = Flask
+* Backend Framework = Node.js and Express
 * Database Management System = PostgreSQL 
-* Mobile Application Framework = Ionic
