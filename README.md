@@ -8,3 +8,4 @@ share their location with friends, or advertise the course they are studying for
 * Frontend Framework = React Native
 * Backend Framework = Node.js and Express
 * Database Management System = PostgreSQL 
+* Host = Amazon Web Services
