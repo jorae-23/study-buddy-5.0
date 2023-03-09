@@ -8,4 +8,4 @@ share their location with friends, or advertise the course they are studying for
 * Frontend Framework = React Native
 * Backend Framework = Flask
 * Database Management System = PostgreSQL 
-* Mobile Application Framework = Ionic
+* Mobile Application Framework = Ionic bruh
