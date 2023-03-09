@@ -6,7 +6,7 @@ import axios from 'axios';
 
 NfcManager.start();
 export default function WelcomePage(){
-  const [status, setTableStatus] =  useState('green')
+  const [status, setTableStatus] =  useState('#86cba6')
 
   const handleTableStatus = () =>{
     //if the table is empty and somebody new comes to reserve it must be turned to red
@@ -23,7 +23,7 @@ export default function WelcomePage(){
     //and anybody else who's at the table itself after the master user has selected that they've open the table. 
 
 
-    const newStatus = status === 'green' ? 'red' : 'green'
+    const newStatus = status === '#86cba6' ? '#fbe29c' : '#86cba6'
     setTableStatus(newStatus)
   }
 
@@ -82,7 +82,7 @@ export default function WelcomePage(){
   return (
     <View style={styless.wrapper}>
         <TouchableOpacity onPress={reserveTable}>
-          <Text>Scan a Tag!</Text>
+          <Text style={{fontSize: 20, color: '#5488a5'}}>Scan a Tag!</Text>
         </TouchableOpacity>
         <View style ={[styless.header, {backgroundColor: status}]}>
           <Text>Table 7</Text>
@@ -96,7 +96,8 @@ const styless = StyleSheet.create({
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: 'white'
+      // App background color
+      backgroundColor: '#ecf0e4'
     },
     header:{
       padding: 20,
