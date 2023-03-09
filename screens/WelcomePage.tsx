@@ -30,7 +30,7 @@ export default function WelcomePage(){
   async function getTagNumber(tagId : String | undefined){
     let tagNum
     try {
-        const response = await axios.get(`http://10.20.45.60:3001/data/api/${tagId}`)
+        const response = await axios.get(`http://34.201.13.238:3001/data/api/${tagId}`)
         tagNum = response.data[0].TagNum
     } catch(error) {
         console.warn('something went wrong getting the tag number', error)
@@ -41,7 +41,7 @@ export default function WelcomePage(){
   async function getTableNum(tagNum : number | undefined){
     let tableNum
     try {
-        const response = await axios.get(`http://10.20.45.60:3001/data/api/g/${tagNum}`)
+        const response = await axios.get(`http://34.201.13.238:3001/data/api/g/${tagNum}`)
         tableNum = response.data[0].TableNum
     } catch(error) {
         console.warn('something went wrong getting the table number', error)
@@ -50,8 +50,13 @@ export default function WelcomePage(){
   }
 
   async function updateTableStatus(tableNum : number | undefined){
-    await axios.put(`http://10.20.45.60:3001/data/api/g/c/${tableNum}`)
+    await axios.put(`http://34.201.13.238:3001/data/api/g/c/${tableNum}`)
   }
+
+  async function updateSeatStatus(tagNum : number | undefined){
+    await axios.put(`http://34.201.13.238:3001/data/api/bruh/${tagNum}`)
+  }
+
 
   async function reserveTable() {
     try {
@@ -67,6 +72,9 @@ export default function WelcomePage(){
       const tagNum =  await getTagNumber(tagID)
       const tableNum = await getTableNum(tagNum)
       await updateTableStatus(tableNum)
+      console.log(tableNum)
+      await updateSeatStatus(tagNum)
+      console.log(tableNum)
       Alert.alert(`You have reserved table ${tableNum} from scanning tag ${tagNum}`)
 
       handleTableStatus()
