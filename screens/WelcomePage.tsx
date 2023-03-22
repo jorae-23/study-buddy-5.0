@@ -1,5 +1,5 @@
 import React, {useState}from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, Image, ImageBackground} from 'react-native';
 import NfcManager, {NfcTech} from 'react-native-nfc-manager';
 import { Alert } from 'react-native';
 import axios from 'axios';
@@ -80,32 +80,61 @@ export default function WelcomePage(){
   }
 
   return (
-    <View style={styless.wrapper}>
-        <TouchableOpacity onPress={reserveTable}>
-          <Text style={{fontSize: 20, color: '#5488a5'}}>Scan a Tag!</Text>
+    
+      <ImageBackground source={require('./Background.png')} resizeMode='cover' style={[styless.wrapper, {width:'100%', height:'100%'}]}>
+         
+        <TouchableOpacity style={styless.tagBox1} onPress={reserveTable}>
+          <Text style={styless.scanTag}>Scan a Tag!</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity style={styless.tagBox2} onPress={reserveTable}>
+          <Text style={styless.scanTag}>Leave Table</Text>
+        </TouchableOpacity>
+  {/*
         <View style ={[styless.header, {backgroundColor: status}]}>
           <Text>Table 7</Text>
         </View>
-        
-    </View>
+  */}
+      </ImageBackground>
+    
   );
 }
 const styless = StyleSheet.create({
     wrapper: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
+      // Needs to become pixel of screen
+      height: '100%',
       // App background color
-      backgroundColor: '#ecf0e4'
+      backgroundColor: '#ecf0e4',
+      flex: 1,
+      flexDirection: 'row',
+      justifyContent: 'center',
     },
     header:{
-      padding: 20,
+      padding: '0%',
       backgroundColor: '#f0ffff',
       borderWidth: 1,
       borderColor: ''
     },
     boldText:{
       fontWeight: 'bold'
+    },
+    tagBox1:{
+      padding: '3%',
+      margin: '3%',
+      height: 100
+    },
+    tagBox2:{
+      padding: '3%',
+      margin: '3%',
+      height: 100
+    },
+    scanTag:{
+      padding: '10%',
+      fontSize: 20, 
+      color: 'black',
+      borderRadius: 10,
+      backgroundColor: '#86cba6',
+      width: '100%',
+      textAlign: 'center'
     }
   });
