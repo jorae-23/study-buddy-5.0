@@ -30,7 +30,7 @@ export default function WelcomePage(){
   async function getTagNumber(tagId : String | undefined){
     let tagNum
     try {
-        const response = await axios.get(`http://34.201.13.238:3001/data/api/${tagId}`)
+        const response = await axios.get(`http://44.203.31.97:3001/data/api/${tagId}`)
         tagNum = response.data[0].TagNum
     } catch(error) {
         console.warn('something went wrong getting the tag number', error)
@@ -41,7 +41,7 @@ export default function WelcomePage(){
   async function getTableNum(tagNum : number | undefined){
     let tableNum
     try {
-        const response = await axios.get(`http://34.201.13.238:3001/data/api/g/${tagNum}`)
+        const response = await axios.get(`http://44.203.31.97:3001/data/api/g/${tagNum}`)
         tableNum = response.data[0].TableNum
     } catch(error) {
         console.warn('something went wrong getting the table number', error)
@@ -50,7 +50,7 @@ export default function WelcomePage(){
   }
 
   async function updateTableStatus(tableNum : number | undefined){
-    await axios.put(`http://34.201.13.238:3001/data/api/g/c/${tableNum}`)
+    await axios.put(`http://44.203.31.97:3001/data/api/g/c/${tableNum}`)
   }
 
   async function reserveTable() {
@@ -80,7 +80,6 @@ export default function WelcomePage(){
   }
 
   return (
-    
       <ImageBackground source={require('./Background.png')} resizeMode='cover' style={[styless.wrapper, {width:'100%', height:'100%'}]}>
          
         <TouchableOpacity style={styless.tagBox1} onPress={reserveTable}>
