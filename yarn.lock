@@ -6212,6 +6212,11 @@ react-native-codegen@^0.71.5:
     jscodeshift "^0.13.1"
     nullthrows "^1.1.1"
 
+react-native-device-info@^10.4.0:
+  version "10.4.0"
+  resolved "https://registry.npmjs.org/react-native-device-info/-/react-native-device-info-10.4.0.tgz"
+  integrity sha512-Z37e0HtpBvfkPRgv4xN7lXpvmJyzjwCXSFTXEkw6m2UgnnIsWlOD02Avu4hJXBlIMMazaW3ZLKal3o9h3AYvCw==
+
 react-native-element-dropdown@^2.8.1:
   version "2.8.1"
   resolved "https://registry.npmjs.org/react-native-element-dropdown/-/react-native-element-dropdown-2.8.1.tgz"
