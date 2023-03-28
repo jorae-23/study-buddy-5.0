@@ -104,6 +104,7 @@ export default function WelcomePage(){
         </ImageBackground>
     </View> 
   );
+}
 
 const styless = StyleSheet.create({
     wrapper: {
