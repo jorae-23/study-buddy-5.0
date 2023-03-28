@@ -80,61 +80,97 @@ export default function WelcomePage(){
   }
 
   return (
-    
-      <ImageBackground source={require('./Background.png')} resizeMode='cover' style={[styless.wrapper, {width:'100%', height:'100%'}]}>
-         
-        <TouchableOpacity style={styless.tagBox1} onPress={reserveTable}>
-          <Text style={styless.scanTag}>Scan a Tag!</Text>
-        </TouchableOpacity>
+    <View style={styless.wrapper}>
+        <ImageBackground source={require('./Background.png')} style={[styless.imageBackground]}>
+          
+          <View style={styless.boxWrapper}>
+            <TouchableOpacity style={styless.box} onPress={reserveTable}>
+              <Text style={styless.boxText} adjustsFontSizeToFit={true}>Scan a Tag</Text>
+            </TouchableOpacity>
+  
+            <TouchableOpacity style={styless.box} onPress={reserveTable}>
+              <Text style={styless.boxText} adjustsFontSizeToFit={true}>Leave Table</Text>
+            </TouchableOpacity>
+          </View>
+        
+          <View style={styless.imageWrapper}>
+            <Image source={require('./BLogo.png')} style={styless.image}></Image>
+          </View>
 
-        <TouchableOpacity style={styless.tagBox2} onPress={reserveTable}>
-          <Text style={styless.scanTag}>Leave Table</Text>
-        </TouchableOpacity>
-  {/*
+          <View style={styless.welcomeWrapper}> 
+            <Text style={styless.welcomeText} adjustsFontSizeToFit={true}> WELCOME! </Text>
+          </View>
+
+        </ImageBackground>
+    </View>
+  
+  /*
         <View style ={[styless.header, {backgroundColor: status}]}>
           <Text>Table 7</Text>
         </View>
-  */}
-      </ImageBackground>
-    
-  );
-}
-const styless = StyleSheet.create({
-    wrapper: {
-      // Needs to become pixel of screen
-      height: '100%',
-      // App background color
-      backgroundColor: '#ecf0e4',
-      flex: 1,
-      flexDirection: 'row',
-      justifyContent: 'center',
-    },
-    header:{
+      header:{
       padding: '0%',
       backgroundColor: '#f0ffff',
       borderWidth: 1,
       borderColor: ''
+    }
+  */  
+  );
+}
+const styless = StyleSheet.create({
+    wrapper: {
+      // App background color
+      //backgroundColor: '#ecf0e4',
+      flex: 1, // sets the entire screen size to 1
+      flexDirection: 'column'
     },
-    boldText:{
-      fontWeight: 'bold'
+    imageBackground:{
+      flex: 1,
+      resizeMode: 'cover'
     },
-    tagBox1:{
+    boxWrapper: {
+      flex: 1,
+      flexDirection: 'row', // sets the child elements to be horizontal
+      alignItems: 'center',
+      justifyContent: 'center'
+    },
+    box:{
+      flex: 1, 
       padding: '3%',
-      margin: '3%',
-      height: 100
-    },
-    tagBox2:{
-      padding: '3%',
-      margin: '3%',
-      height: 100
-    },
-    scanTag:{
-      padding: '10%',
-      fontSize: 20, 
-      color: 'black',
+      marginTop: '10%',
+      marginHorizontal: '3%',
+      maxHeight: '100%',
+      width: '100%',
       borderRadius: 10,
       backgroundColor: '#86cba6',
-      width: '100%',
+      justifyContent: 'center'
+    },
+    boxText:{
+      fontSize: 20, 
+      color: 'black',
+      textAlign: 'center',
+    },
+    imageWrapper: {
+      flex: 1,
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center'
+    },
+    image: {
+      flex: 1,
+      resizeMode: 'contain',
+      padding: '5%',
+      width: '50%'
+    },
+    welcomeWrapper: {
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center' 
+    },
+    welcomeText: {
+      fontSize: 40,
+      textDecorationLine: 'underline', 
+      color: 'black',
       textAlign: 'center'
     }
   });
