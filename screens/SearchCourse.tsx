@@ -98,7 +98,7 @@ export default function SearchCourse(){
             )
     }
     return(
-        <View>
+        <View style={styles.backgroundCol}>
             <View>
                 <RNText>Select course from the dropdown to see which tables have students studying for that course</RNText> 
             </View>
@@ -130,8 +130,12 @@ const styles = StyleSheet.create({
     borderColor: "red",
     borderWidth: 2,
     backgroundColor: '#f0ffff',
+  },
+  backgroundCol: {
+    // App background color
+    backgroundColor: '#ecf0e4',
   }
-  });
+});
 
 
 
