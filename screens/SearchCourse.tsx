@@ -1,4 +1,4 @@
-import React, {useState, useCallback}from 'react';
+import React, {useState, useCallback, useEffect}from 'react';
 import {View, Text as RNText ,TouchableOpacity, StyleSheet, Button} from 'react-native';
 import NfcManager, {NfcTech} from 'react-native-nfc-manager';
 import { Alert } from 'react-native';
@@ -25,11 +25,11 @@ type courses = courseDesc[]
 
 export default function SearchCourse(){
   const visualTableMap = new Map()
-  const font = useFont(require('../assets/fonts/OpenSans-Regular.ttf'), 15)
+  //const font = useFont(require('../assets/fonts/OpenSans-Regular.ttf'), 15)
 
   visualTableMap.set(1,<Box box={rect(20,350,50,50)}></Box>)
- visualTableMap.set(8,<Box box={rect(100,350,50,50)}></Box>)
- visualTableMap.set(7,<Box box={rect(180,350,50,50)}></Box>)
+  visualTableMap.set(8,<Box box={rect(100,350,50,50)}></Box>)
+  visualTableMap.set(7,<Box box={rect(180,350,50,50)}></Box>)
 
  /* if(font){
       visualTableMap.set(1,<SkiaText
@@ -57,12 +57,16 @@ export default function SearchCourse(){
     const [courseArray,setCourseArray] = useState<courses>([])
 
     let studytables: studytable = []
+    
+    useEffect(() => {
+      async function loadCourses() {
+        const response = await axios.get(`http://44.203.31.97:3001/`);
+        const courses = response.data as courses;
+        setCourseArray(courses);
+      }
+      loadCourses();
+    }, []);
 
-    async function courseListDropDown(){
-       const response = await axios.get(`http://44.203.31.97:3001/`)
-       const courses = response.data as courses
-       setCourseArray(courses)
-    }
     async function studyTablesInfo() {
         setMyTableFilterArray([])
         let response2 = await axios.get(
@@ -87,9 +91,7 @@ export default function SearchCourse(){
       } 
       
 
-    const renderLabel = () =>{
-       // courseListDropDown()
-
+    const renderLabel = () =>{ 
             return(
                 <RNText>
                     Courses
