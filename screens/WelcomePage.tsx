@@ -5,9 +5,25 @@ import { Alert } from 'react-native';
 import axios from 'axios';
 import DeviceInfo from 'react-native-device-info';
 
+import { useNavigation } from '@react-navigation/native';
 
 NfcManager.start();
+
 export default function WelcomePage(){
+  const navigation = useNavigation();
+
+  function navigateToMyTable() {
+    navigation.navigate('My Table' as never);
+  }
+
+  function navigateToSearchCourse() {
+    navigation.navigate('Search Course' as never);
+  }
+
+  function navigateToLibFloorPlan() {
+    navigation.navigate('Library Floor Plan'as never);
+  }
+
   const [status, setTableStatus] =  useState('#86cba6')
 
   const handleTableStatus = () =>{
@@ -23,7 +39,6 @@ export default function WelcomePage(){
     //to signify which classes are being studied here according the master user.
     //Please note that this option is open to both the master user and intially
     //and anybody else who's at the table itself after the master user has selected that they've open the table. 
-
 
     const newStatus = status === '#86cba6' ? '#fbe29c' : '#86cba6'
     setTableStatus(newStatus)
@@ -94,54 +109,74 @@ export default function WelcomePage(){
   }
 
   return (
-    <View style={styless.wrapper}>
+    <View style={styless.container}>
         <ImageBackground source={require('./Background.png')} style={[styless.imageBackground]}>
           
-          <View style={styless.boxWrapper}>
+          <View style={styless.boxContainer}>
             <TouchableOpacity style={styless.box} onPress={reserveTable}>
               <Text style={styless.boxText} adjustsFontSizeToFit={true}>Scan a Tag</Text>
             </TouchableOpacity>
-  
+
             <TouchableOpacity style={styless.box} onPress={reserveTable}>
               <Text style={styless.boxText} adjustsFontSizeToFit={true}>Leave Table</Text>
             </TouchableOpacity>
           </View>
         
-          <View style={styless.imageWrapper}>
+          <View style={styless.logoContainer}>
             <Image source={require('./BLogo.png')} style={styless.image}></Image>
           </View>
 
-          <View style={styless.welcomeWrapper}> 
+          <View style={styless.welcomeContainer}> 
             <Text style={styless.welcomeText} adjustsFontSizeToFit={true}> WELCOME! </Text>
+            <View style={styless.welcomeLine}></View>
+            <View style={styless.welcomeBox}>
+              <Text style={styless.boxText} adjustsFontSizeToFit={true}> Study Buddy helps people study and be social. 
+              So, procrastinate I guess. </Text>
+            </View>
+          </View>
+
+          <View style={styless.navContainer}>
+            <TouchableOpacity style={styless.box} onPress={navigateToMyTable}>
+              <Text style={styless.boxText} adjustsFontSizeToFit={true}>My Table</Text>
+            </TouchableOpacity>
+  
+            <TouchableOpacity style={styless.box} onPress={navigateToSearchCourse}>
+              <Text style={styless.boxText} adjustsFontSizeToFit={true}>Search Course</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styless.box} onPress={navigateToLibFloorPlan}>
+              <Text style={styless.boxText} adjustsFontSizeToFit={true}>Library Layout</Text>
+            </TouchableOpacity>
           </View>
 
         </ImageBackground>
     </View> 
   );
-  }
+};
 const styless = StyleSheet.create({
-    wrapper: {
+    container: {
       // App background color
       //backgroundColor: '#ecf0e4',
       flex: 1, // sets the entire screen size to 1
       flexDirection: 'column',
+      justifyContent: 'center'
     },
     imageBackground:{
       flex: 1,
       resizeMode: 'cover'
     },
-    boxWrapper: {
-      flex: 1,
+    boxContainer: {
+      flex: 0.7,
       flexDirection: 'row', // sets the child elements to be horizontal
       alignItems: 'center',
-      justifyContent: 'center'
+      justifyContent: 'flex-start',
+      //backgroundColor: '#FFC107'
     },
     box:{
       flex: 1, 
       padding: '3%',
-      marginTop: '10%',
       marginHorizontal: '3%',
-      maxHeight: '100%',
+      height: '70%',
       width: '100%',
       borderRadius: 10,
       backgroundColor: '#86cba6',
@@ -152,11 +187,12 @@ const styless = StyleSheet.create({
       color: 'black',
       textAlign: 'center',
     },
-    imageWrapper: {
-      flex: 1,
+    logoContainer: {
+      flex: 1.25,
       flexDirection: 'column',
       alignItems: 'center',
-      justifyContent: 'center'
+      justifyContent: 'center',
+      //backgroundColor: '#00BCD4'
     },
     image: {
       flex: 1,
@@ -164,16 +200,40 @@ const styless = StyleSheet.create({
       padding: '5%',
       width: '50%'
     },
-    welcomeWrapper: {
-      flex: 1,
+    welcomeContainer: {
+      flex: 3,
       alignItems: 'center',
-      justifyContent: 'center' 
+      justifyContent: 'flex-start', 
+      //backgroundColor: '#FF5252',
+      
     },
     welcomeText: {
       fontSize: 40,
-      textDecorationLine: 'underline', 
+      //textDecorationLine: 'underline', 
       color: 'black',
       textAlign: 'center'
+    },
+    welcomeLine: {
+      width: '80%',
+      height: '2%',
+      borderRadius: 10,
+      backgroundColor: '#000000'
+    },
+    welcomeBox: {
+      flex: 1, 
+      padding: '3%',
+      marginVertical: '3%',
+      width: '90%',
+      borderRadius: 10,
+      backgroundColor: '#fbe29c',
+      justifyContent: 'center'
+    },
+    navContainer: {
+      flex: 0.8,
+      flexDirection: 'row', // sets the child elements to be horizontal
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+      //backgroundColor: '#FF1493'
     }
   });
 
