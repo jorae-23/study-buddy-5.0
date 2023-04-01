@@ -63,7 +63,6 @@ export default function SearchCourse(){
        const courses = response.data as courses
        setCourseArray(courses)
     }
-
     async function studyTablesInfo() {
         setMyTableFilterArray([])
         let response2 = await axios.get(
@@ -85,11 +84,11 @@ export default function SearchCourse(){
           }
         }
         setMyTableFilterArray(newTableFilterArray);
-      }
+      } 
       
 
     const renderLabel = () =>{
-        courseListDropDown()
+       // courseListDropDown()
 
             return(
                 <RNText>

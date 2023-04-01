@@ -3,6 +3,8 @@ import {View, Text, TouchableOpacity, StyleSheet, Image, ImageBackground} from '
 import NfcManager, {NfcTech} from 'react-native-nfc-manager';
 import { Alert } from 'react-native';
 import axios from 'axios';
+import DeviceInfo from 'react-native-device-info';
+
 import { useNavigation } from '@react-navigation/native';
 
 NfcManager.start();
@@ -59,7 +61,7 @@ export default function WelcomePage(){
         const response = await axios.get(`http://44.203.31.97:3001/data/api/g/${tagNum}`)
         tableNum = response.data[0].TableNum
     } catch(error) {
-        console.warn('something went wrong getting the table number', error)
+        console.warn('something went wrong getting the table numbers', error)
     }
     return tableNum
   }
@@ -67,6 +69,17 @@ export default function WelcomePage(){
   async function updateTableStatus(tableNum : number | undefined){
     await axios.put(`http://44.203.31.97:3001/data/api/g/c/${tableNum}`)
   }
+
+  async function putUniqueDeviceId(tagNum: number | undefined){
+    const uniqueId =  await DeviceInfo.getUniqueId()
+    await axios.put(`http://44.203.31.97:3001/practi/${uniqueId}/${tagNum}`)
+      .then(response => {
+        console.log(response)
+      })
+      .catch(error => {
+        console.error(error)
+      })
+}
 
   async function reserveTable() {
     try {
@@ -82,6 +95,7 @@ export default function WelcomePage(){
       const tagNum =  await getTagNumber(tagID)
       const tableNum = await getTableNum(tagNum)
       await updateTableStatus(tableNum)
+      await putUniqueDeviceId(tagNum)
       Alert.alert(`You have reserved table ${tableNum} from scanning tag ${tagNum}`)
 
       handleTableStatus()
@@ -139,7 +153,6 @@ export default function WelcomePage(){
     </View> 
   );
 };
-
 const styless = StyleSheet.create({
     container: {
       // App background color
@@ -167,7 +180,7 @@ const styless = StyleSheet.create({
       width: '100%',
       borderRadius: 10,
       backgroundColor: '#86cba6',
-      justifyContent: 'center'
+      justifyContent: 'center',
     },
     boxText:{
       fontSize: 20, 
@@ -223,3 +236,4 @@ const styless = StyleSheet.create({
       //backgroundColor: '#FF1493'
     }
   });
+
