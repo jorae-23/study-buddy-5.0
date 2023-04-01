@@ -9,19 +9,24 @@ import { Canvas, rect, Rect,Box, SkiaView,Text as SkiaText, useFont, SkFont} fro
 import DeviceInfo from 'react-native-device-info';
 
 
-async function id(){
-    const uniqueId = await DeviceInfo.getUniqueId()
-    console.warn(uniqueId)
-    
+ async function PutUniqueDeviceId(){
+    const uniqueId =  await DeviceInfo.getUniqueId()
+    const tableNum = 10
+    await axios.put(`http://44.203.31.97:3001/practi/${uniqueId}/${tableNum}`)
+      .then(response => {
+        console.log(response)
+      })
+      .catch(error => {
+        console.error(error)
+      })
 }
 
 function ok(){
-    id()
+    PutUniqueDeviceId()
     return(
         <Text>Yummy</Text>
     )
 }
-
 
 export default function MyTable(){
     return(
