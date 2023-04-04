@@ -81,8 +81,9 @@ export default function WelcomePage(){
       })
 }
 
-  async function reserveTable() {
+    async function reserveTable() {
     try {
+      
       Alert.alert('Scan button pressed', 'looking for tag to scan')
       
       // register for the NFC tag with NDEF in it
@@ -107,6 +108,7 @@ export default function WelcomePage(){
       NfcManager.cancelTechnologyRequest();
     }
   }
+  
 
   return (
     <View style={styless.container}>
@@ -153,6 +155,8 @@ export default function WelcomePage(){
     </View> 
   );
 };
+
+
 const styless = StyleSheet.create({
     container: {
       // App background color
