@@ -23,6 +23,7 @@ export default function LibFloorPlan(){
         </SafeAreaView>
     )
 }
+//bw43
 
 
 const styles = StyleSheet.create({
