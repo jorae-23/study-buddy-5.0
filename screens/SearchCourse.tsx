@@ -5,6 +5,8 @@ import { Alert } from 'react-native';
 import axios from 'axios';
 import { Dropdown } from 'react-native-element-dropdown';
 import { Canvas, rect, Rect,Box, SkiaView,Text as SkiaText, useFont, SkFont} from '@shopify/react-native-skia';
+import {Ionicons} from '@expo/vector-icons';
+import { SelectList } from 'react-native-dropdown-select-list';
 
 interface courseDesc{
     CourseCode: string,
@@ -52,7 +54,8 @@ export default function SearchCourse(){
           font={font}
         />)  
     } */
-    const [value, setValue] = useState<string | null>(null)
+    const [selected, setSelected] = useState('');
+    const [value, setValue] = useState('');
     const [myTableFilterArray, setMyTableFilterArray] = useState<React.ReactNode[]>([]);
     const [courseArray,setCourseArray] = useState<courses>([])
 
@@ -60,16 +63,21 @@ export default function SearchCourse(){
     
     useEffect(() => {
       async function loadCourses() {
-        const response = await axios.get(`http://44.203.31.97:3001/`);
-        const courses = response.data as courses;
-        setCourseArray(courses);
-      }
-      loadCourses();
-    }, []);
+        try {
+          const response = await axios.get(`http://44.203.31.97:3001/`);
+          const courses = response.data as courses;
+          setCourseArray(courses);
+        } catch (error) {
+          console.log('error fetching courses', error)
+        }
+      }  
+        loadCourses();
+      }, []);
 
     async function studyTablesInfo() {
-        setMyTableFilterArray([])
-        let response2 = await axios.get(
+      setMyTableFilterArray([])
+      try{
+        const response2 = await axios.get(
           `http://44.203.31.97:3001/data/api/curate/specific/studytables`
         );
         studytables = await response2.data;
@@ -80,25 +88,50 @@ export default function SearchCourse(){
             if (currentCourse === value && currentCourse !== null) {
               visualTableMap.forEach((tableNum, table) => {
                 if(table === studytables[i].TableNum){
-                    console.warn(table)
-                    newTableFilterArray.push(tableNum);
+                  console.warn(table)
+                  newTableFilterArray.push(tableNum);
                 }
               });              
             }
           }
         }
         setMyTableFilterArray(newTableFilterArray);
-      } 
-      
-
-    const renderLabel = () =>{ 
-            return(
-                <RNText>
-                    Courses
-                </RNText>
-            )
+      }catch(error){
+        console.log('error fetching study tables', error)
+      }
     }
+    
+    const renderLabel = () => { 
+      return(
+        <RNText>
+          Courses
+        </RNText>
+      )
+    };  
+      
     return(
+      <View style={styles.container}>
+        <View>
+          <RNText>Select course from the dropdown to see which tables have students studying for that course</RNText>
+        </View>
+        <SelectList
+          //setSelected={(val) => setValue(val)}
+          setSelected={(val: React.SetStateAction<string>) => setValue(val)}
+          data={courseArray}
+          save="CourseName"
+          searchPlaceholder='Search for course...'
+          search={true}
+          labelField="CourseName"
+        />
+        <Canvas style={{width: 400, height: 400}}>
+          {myTableFilterArray}
+        </Canvas>
+      </View>
+
+    )
+  }
+    
+    /*return(
         <View style={styles.backgroundCol}>
             <View>
                 <RNText>Select course from the dropdown to see which tables have students studying for that course</RNText> 
@@ -116,7 +149,7 @@ export default function SearchCourse(){
                     studyTablesInfo() 
                     console.warn("what is value",value) 
                 }}
-                searchPlaceholder="Search..."
+                searchPlaceholder="Search for course..."
             />
             <Canvas style={{width: 400, height: 400}}>
                 {myTableFilterArray}
@@ -124,10 +157,10 @@ export default function SearchCourse(){
         </View>
         
     )
-}
+}*/
 const styles = StyleSheet.create({
 
-  container:{
+  /*container:{
     borderColor: "red",
     borderWidth: 2,
     backgroundColor: '#f0ffff',
@@ -135,7 +168,37 @@ const styles = StyleSheet.create({
   backgroundCol: {
     // App background color
     backgroundColor: '#ecf0e4',
+  }*/
+
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+
+  },
+  dropdownStyle: {
+    borderRadius: 10,
+    backgroundColor: '#f7f7f7',
+  },
+  listItemStyle: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e9e9e9',
+  },
+  selectedListItemStyle: {
+    backgroundColor: '#336699',
+  },
+  listTextStyle: {
+    color: '#333',
+  },
+  selectedListTextStyle: {
+    color: '#fff',
+  },
+  arrowStyle: {
+    paddingHorizontal: 10,
+    color: '#336699'
   }
+
 });
 
 
