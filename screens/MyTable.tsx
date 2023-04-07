@@ -82,6 +82,23 @@ export default function MyTable() {
   const [deviceid, setDeviceid] = useState('');
   const [tableNum, setTableNum] = useState(0);
   const [status, setStatus] =  useState('Closed')
+  const [showAll, setShowAll] = useState(false)
+  const [numOfStudents, setNumOfStudents] = useState(0)
+
+  async function getNumOfStudents(tableNum: number | undefined){
+    const response = await axios.get(`http://44.203.31.97:3001/data/api/g/totalStudents/${tableNum}`)
+    const numOStu:number =  await response.data[0].num_occupied_seats
+    console.warn(numOStu)
+    setNumOfStudents(numOStu)
+  }
+
+  const renderedData = showAll ? courses: courses.slice(0,2)
+
+  if(!Object.is(courses, [])){
+    useEffect(() =>{
+      setStatus('sharing')
+    }, []);
+  }
 
   
   /*useEffect(() =>{
@@ -112,24 +129,29 @@ export default function MyTable() {
           setCourses(studyTables[i].Courses);
           setDeviceid(studyTables[i].deviceid);
           setTableNum(studyTables[i].TableNum);
-          setTagNum(studyTables[i].TagNum);
-          console.warn(courses)
+          setTagNum(studyTables[i].TagNum); 
           break;
         }
       }
     }
     checkIfUserReservedTable();
+    getNumOfStudents(tableNum);
   }, []);
 
   return (
     <View style={styles.container}>
        
       <View>
-      <Text>Courses:</Text>
-      <Text>{`${courses[0]}\n`}</Text>
-      <Text>{`${courses[1]}\n`}</Text>
-      <Text>See all...</Text>
-       
+
+        {renderedData.map((item,index) =>(
+          <Text key ={index}>{item}</Text>
+        ))
+        }
+        {!showAll && (
+          <TouchableOpacity onPress ={() => setShowAll(true)}>
+            <Text>See All...</Text>
+          </TouchableOpacity>
+        )}
         <Text>Tag Number: {tagNum}</Text>
         <Text>Table Number: {tableNum}</Text>
         <Text>Status: {status}</Text>
