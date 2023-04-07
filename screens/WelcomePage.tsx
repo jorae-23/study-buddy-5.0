@@ -70,6 +70,10 @@ export default function WelcomePage(){
     await axios.put(`http://44.203.31.97:3001/data/api/g/c/${tableNum}`)
   }
 
+  async function updateSeatStatus(tagNum : number | undefined){
+    await axios.put(`http://44.203.31.97:3001/data/api/bruh/${tagNum}`)
+  }
+
   async function putUniqueDeviceId(tagNum: number | undefined){
     const uniqueId =  await DeviceInfo.getUniqueId()
     await axios.put(`http://44.203.31.97:3001/practi/${uniqueId}/${tagNum}`)
@@ -95,6 +99,7 @@ export default function WelcomePage(){
       const tagID = tag?.id
       const tagNum =  await getTagNumber(tagID)
       const tableNum = await getTableNum(tagNum)
+      await updateSeatStatus(tagNum)
       await updateTableStatus(tableNum)
       await putUniqueDeviceId(tagNum)
       Alert.alert(`You have reserved table ${tableNum} from scanning tag ${tagNum}`)
