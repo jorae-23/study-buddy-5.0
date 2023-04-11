@@ -1,11 +1,13 @@
-import React, {useState}from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, Image, ImageBackground} from 'react-native';
+import React, {useState} from 'react';
+import {View, Text, TouchableOpacity, StyleSheet, Image, ImageBackground, Platform, UIManager} from 'react-native';
 import NfcManager, {NfcTech} from 'react-native-nfc-manager';
 import { Alert } from 'react-native';
 import axios from 'axios';
 import DeviceInfo from 'react-native-device-info';
-
 import { useNavigation } from '@react-navigation/native';
+
+import {AccordionList} from 'react-native-accordion-list-view';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 NfcManager.start();
 
@@ -23,6 +25,33 @@ export default function WelcomePage(){
   function navigateToLibFloorPlan() {
     navigation.navigate('Library Floor Plan'as never);
   }
+
+  // Stuff for the drop down of sections
+  const sections = [
+    { title: 'About Us',
+      content: 'Explanation of the company',
+    },
+    { title: 'My Table Page',
+      content: 'Explanation of the page',
+    },
+    { title: 'Search Course Page',
+      content: 'Explanation of the page',
+    },
+    { title: 'Library Layout Page',
+      content: 'Explanation of the page',
+    }
+  ];
+  
+  /*
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+        if (UIManager.setLayoutAnimationEnabledExperimental) {
+            UIManager.setLayoutAnimationEnabledExperimental(true);
+        }
+    }
+  }, []);
+  */
+  
 
   const [status, setTableStatus] =  useState('#86cba6')
 
@@ -87,8 +116,7 @@ export default function WelcomePage(){
 
     async function reserveTable() {
     try {
-      
-      Alert.alert('Scan button pressed', 'looking for tag to scan')
+      Alert.alert('Secure table button selected.', 'Looking for tag to scan.')
       
       // register for the NFC tag with NDEF in it
       await NfcManager.requestTechnology(NfcTech.Ndef);
@@ -102,7 +130,7 @@ export default function WelcomePage(){
       await updateSeatStatus(tagNum)
       await updateTableStatus(tableNum)
       await putUniqueDeviceId(tagNum)
-      Alert.alert(`You have reserved table ${tableNum} from scanning tag ${tagNum}`)
+      Alert.alert(`You have reserved Table ${tableNum} from scanning Tag ${tagNum}.`)
 
       handleTableStatus()
 
@@ -121,38 +149,46 @@ export default function WelcomePage(){
           
           <View style={styless.boxContainer}>
             <TouchableOpacity style={styless.box} onPress={reserveTable}>
-              <Text style={styless.boxText} adjustsFontSizeToFit={true}>Scan a Tag</Text>
+              <Text style={styless.boxText}>Secure Table</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styless.box} onPress={reserveTable}>
-              <Text style={styless.boxText} adjustsFontSizeToFit={true}>Leave Table</Text>
+              <Text style={styless.boxText}>Leave Table</Text>
             </TouchableOpacity>
           </View>
-        
-          <View style={styless.logoContainer}>
-            <Image source={require('./BLogo.png')} style={styless.image}></Image>
-          </View>
 
-          <View style={styless.welcomeContainer}> 
-            <Text style={styless.welcomeText} adjustsFontSizeToFit={true}> WELCOME! </Text>
-            <View style={styless.welcomeLine}></View>
-            <View style={styless.welcomeBox}>
-              <Text style={styless.boxText} adjustsFontSizeToFit={true}> Study Buddy helps people study and be social. 
-              So, procrastinate I guess. </Text>
+          <View style={styless.middleContainer}>
+            <View style={styless.logoContainer}>
+              <Image source={require('./BLogo.png')} style={styless.image}></Image>
+            </View>
+
+            <View style={styless.welcomeContainer}> 
+              <Text style={styless.welcomeText} adjustsFontSizeToFit={true}> WELCOME! </Text>
+              <View style={styless.welcomeLine}></View>
+              <View style={styless.welcomeBox}>
+                <AccordionList
+                        data={sections}
+                        containerItemStyle = {styless.dropBox}
+                        customTitle={item => <Text style={styless.dropBoxText}>{item.title}</Text> }
+                        customBody={item => <Text style={styless.dropBoxText}>{item.content}</Text>}
+                        animationDuration={300}
+                        expandMultiple={false}
+                />
+              </View>
             </View>
           </View>
 
           <View style={styless.navContainer}>
             <TouchableOpacity style={styless.box} onPress={navigateToMyTable}>
-              <Text style={styless.boxText} adjustsFontSizeToFit={true}>My Table</Text>
+              <Text style={styless.boxText}>My Table</Text>
             </TouchableOpacity>
   
             <TouchableOpacity style={styless.box} onPress={navigateToSearchCourse}>
-              <Text style={styless.boxText} adjustsFontSizeToFit={true}>Search Course</Text>
+              <Text style={styless.boxText}>Search Course</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styless.box} onPress={navigateToLibFloorPlan}>
-              <Text style={styless.boxText} adjustsFontSizeToFit={true}>Library Layout</Text>
+              <Text style={styless.boxText}>Library Layout</Text>
             </TouchableOpacity>
           </View>
 
@@ -164,6 +200,7 @@ export default function WelcomePage(){
 
 const styless = StyleSheet.create({
     container: {
+      // Testing the pull stuff
       // App background color
       //backgroundColor: '#ecf0e4',
       flex: 1, // sets the entire screen size to 1
@@ -175,10 +212,10 @@ const styless = StyleSheet.create({
       resizeMode: 'cover'
     },
     boxContainer: {
-      flex: 0.7,
+      flex: 1,
       flexDirection: 'row', // sets the child elements to be horizontal
       alignItems: 'center',
-      justifyContent: 'flex-start',
+      justifyContent: 'flex-start'
       //backgroundColor: '#FFC107'
     },
     box:{
@@ -189,19 +226,23 @@ const styless = StyleSheet.create({
       width: '100%',
       borderRadius: 10,
       backgroundColor: '#86cba6',
-      justifyContent: 'center',
+      justifyContent: 'center'
     },
     boxText:{
-      fontSize: 20, 
+      fontSize: 18, 
       color: 'black',
-      textAlign: 'center',
+      textAlign: 'center'
+    },
+    middleContainer: {
+      flex: 5.5,
+      alignContent: 'center',
+      //backgroundColor: '#00BCD4'
     },
     logoContainer: {
-      flex: 1.25,
-      flexDirection: 'column',
+      flex: 1,
+      //flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      //backgroundColor: '#00BCD4'
     },
     image: {
       flex: 1,
@@ -210,38 +251,50 @@ const styless = StyleSheet.create({
       width: '50%'
     },
     welcomeContainer: {
-      flex: 3,
+      flex: 2,
       alignItems: 'center',
-      justifyContent: 'flex-start', 
+      justifyContent: 'flex-start',
       //backgroundColor: '#FF5252',
-      
     },
     welcomeText: {
-      fontSize: 40,
-      //textDecorationLine: 'underline', 
+      fontSize: 35, 
       color: 'black',
       textAlign: 'center'
     },
     welcomeLine: {
       width: '80%',
-      height: '2%',
+      height: '1.5%',
       borderRadius: 10,
       backgroundColor: '#000000'
     },
     welcomeBox: {
       flex: 1, 
       padding: '3%',
-      marginVertical: '3%',
+      marginVertical: '2%',
       width: '90%',
       borderRadius: 10,
+      backgroundColor: '#5488a5'
+    },
+    welcomeBoxText: {
+      fontSize: 18, 
+      color: 'black',
+      textAlign: 'center'
+    },
+    dropBox: { 
       backgroundColor: '#fbe29c',
-      justifyContent: 'center'
+      padding: '3%',
+      marginBottom: '3%'
+    },
+    dropBoxText: {
+      fontSize: 18, 
+      color: 'black',
+      textAlign: 'left'
     },
     navContainer: {
-      flex: 0.8,
+      flex: 1,
       flexDirection: 'row', // sets the child elements to be horizontal
       alignItems: 'center',
-      justifyContent: 'flex-start',
+      justifyContent: 'flex-start'
       //backgroundColor: '#FF1493'
     }
   });
