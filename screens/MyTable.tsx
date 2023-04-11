@@ -83,14 +83,9 @@ export default function MyTable() {
   const [tableNum, setTableNum] = useState(0);
   const [status, setStatus] =  useState('Closed')
   const [showAll, setShowAll] = useState(false)
-  const [numOfStudents, setNumOfStudents] = useState(0)
+  const [studentsAtTable, setStudentsAtTable] = useState(0)
 
-  async function getNumOfStudents(tableNum: number | undefined){
-    const response = await axios.get(`http://44.203.31.97:3001/data/api/g/totalStudents/${tableNum}`)
-    const numOStu:number =  await response.data[0].num_occupied_seats
-    console.warn(numOStu)
-    setNumOfStudents(numOStu)
-  }
+ 
 
   const renderedData = showAll ? courses: courses.slice(0,2)
 
@@ -116,6 +111,13 @@ export default function MyTable() {
     console.warn(response)
   }
 
+  async function getNumOfStudents(tableNum: number | undefined){
+    const response = await axios.get(`http://44.203.31.97:3001/data/api/g/totalStudents/${tableNum}`)
+    const numOStu:number =  await response.data[0].num_occupied_seats
+    console.warn(numOStu)
+    setStudentsAtTable(numOStu)
+  }
+
 
   useEffect(() => {
     async function checkIfUserReservedTable() {
@@ -129,17 +131,35 @@ export default function MyTable() {
           setCourses(studyTables[i].Courses);
           setDeviceid(studyTables[i].deviceid);
           setTableNum(studyTables[i].TableNum);
-          setTagNum(studyTables[i].TagNum); 
+          setTagNum(studyTables[i].TagNum);
+          await getNumOfStudents(studyTables[i].TableNum)
           break;
         }
       }
     }
-    checkIfUserReservedTable();
-    getNumOfStudents(tableNum);
+    checkIfUserReservedTable()
+    console.warn("tableNum at this point after the checkIfUserReserved is: " , tableNum)
   }, []);
+   
+
+  /*
+  useEffect(() =>{
+    async function getNumOfStudents(tableNum: number | undefined){
+      const response = await axios.get(`http://44.203.31.97:3001/data/api/g/totalStudents/${tableNum}`)
+      const numOStu:number =  await response.data[0].num_occupied_seats
+      console.warn(numOStu)
+      setStudentsAtTable(numOStu)
+    }
+    getNumOfStudents(tableNum);
+
+  }, []) */
 
   return (
     <View style={styles.container}>
+      <Text>Table Number: {tableNum}</Text>
+      <TouchableOpacity onPress={reserveTable}>
+              <Text  adjustsFontSizeToFit={true}>Scan a Tag</Text>
+      </TouchableOpacity>
         <Text style = {{color: 'black'}}>My table</Text>
         <Text style = {{color: 'black'}}>Broad Cast</Text>
         <Canvas style={{width: 500, height: 500}}>
@@ -149,6 +169,12 @@ export default function MyTable() {
        
       <View>
 
+      <TouchableOpacity  onPress={reserveTable}>
+              <Text  adjustsFontSizeToFit={true}>Leave Table</Text>
+      </TouchableOpacity>
+      <View>
+        <Text>Status: {status}</Text>
+        <Text>Courses:</Text>
         {renderedData.map((item,index) =>(
           <Text key ={index}>{item}</Text>
         ))
@@ -158,18 +184,11 @@ export default function MyTable() {
             <Text>See All...</Text>
           </TouchableOpacity>
         )}
-        <Text>Tag Number: {tagNum}</Text>
-        <Text>Table Number: {tableNum}</Text>
-        <Text>Status: {status}</Text>
+        <Text>Study Buddies: {studentsAtTable}</Text>
       </View>
-      <TouchableOpacity onPress={reserveTable}>
-              <Text  adjustsFontSizeToFit={true}>Scan a Tag</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity  onPress={reserveTable}>
-              <Text  adjustsFontSizeToFit={true}>Leave Table</Text>
-      </TouchableOpacity>
-      <Text>Broadcast</Text>
+      <Text>Seats Occupied: {studentsAtTable}</Text>
+      <Text>Seats Available: {}</Text>
+      
       <Text>add a course</Text>
     </View>
   );
