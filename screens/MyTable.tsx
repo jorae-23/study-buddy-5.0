@@ -154,7 +154,7 @@ export default function MyTable() {
 
   }, []) */
 
-  return (
+  return(
     <View style={styles.container}>
       <Text>Table Number: {tableNum}</Text>
       <TouchableOpacity onPress={reserveTable}>
@@ -165,10 +165,8 @@ export default function MyTable() {
         <Canvas style={{width: 500, height: 500}}>
             <Box box={rect(115,350,150,150)}></Box>
         </Canvas>
-        {ok()}
-       
-      <View>
-
+      
+    
       <TouchableOpacity  onPress={reserveTable}>
               <Text  adjustsFontSizeToFit={true}>Leave Table</Text>
       </TouchableOpacity>
