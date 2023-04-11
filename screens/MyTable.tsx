@@ -33,8 +33,8 @@ function ok(){
 export default function MyTable(){
     return(
     <View style={styles.container}>
-        <Text>My table</Text>
-        <Text>Broad Cast</Text>
+        <Text style = {{color: 'black'}}>My table</Text>
+        <Text style = {{color: 'black'}}>Broad Cast</Text>
         <Canvas style={{width: 500, height: 500}}>
             <Box box={rect(115,350,150,150)}></Box>
         </Canvas>
