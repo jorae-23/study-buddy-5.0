@@ -149,11 +149,11 @@ export default function WelcomePage(){
           
           <View style={styless.boxContainer}>
             <TouchableOpacity style={styless.box} onPress={reserveTable}>
-              <Text style={styless.boxText}>Secure Table</Text>
+              <Text style={styless.boxText} adjustsFontSizeToFit={true}>Secure Table</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styless.box} onPress={reserveTable}>
-              <Text style={styless.boxText}>Leave Table</Text>
+              <Text style={styless.boxText} adjustsFontSizeToFit={true}>Leave Table</Text>
             </TouchableOpacity>
           </View>
 
@@ -169,8 +169,8 @@ export default function WelcomePage(){
                 <AccordionList
                         data={sections}
                         containerItemStyle = {styless.dropBox}
-                        customTitle={item => <Text style={styless.dropBoxText}>{item.title}</Text> }
-                        customBody={item => <Text style={styless.dropBoxText}>{item.content}</Text>}
+                        customTitle={item => <Text style={styless.dropBoxText} adjustsFontSizeToFit={true}>{item.title}</Text> }
+                        customBody={item => <Text style={styless.dropBoxText} adjustsFontSizeToFit={true}>{item.content}</Text>}
                         animationDuration={300}
                         expandMultiple={false}
                 />
@@ -180,15 +180,15 @@ export default function WelcomePage(){
 
           <View style={styless.navContainer}>
             <TouchableOpacity style={styless.box} onPress={navigateToMyTable}>
-              <Text style={styless.boxText}>My Table</Text>
+              <Text style={styless.boxText} adjustsFontSizeToFit={true}>My Table</Text>
             </TouchableOpacity>
   
             <TouchableOpacity style={styless.box} onPress={navigateToSearchCourse}>
-              <Text style={styless.boxText}>Search Course</Text>
+              <Text style={styless.boxText} adjustsFontSizeToFit={true}>Search Course</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styless.box} onPress={navigateToLibFloorPlan}>
-              <Text style={styless.boxText}>Library Layout</Text>
+              <Text style={styless.boxText} adjustsFontSizeToFit={true}>Library Layout</Text>
             </TouchableOpacity>
           </View>
 
