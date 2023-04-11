@@ -67,6 +67,7 @@ export default function SearchCourse(){
         setCourseArray(courses);
       }
       loadCourses();
+      console.warn(courseArray)
     }, []);
 
     async function studyTablesInfo() {
@@ -82,7 +83,7 @@ export default function SearchCourse(){
             if (currentCourse === value && currentCourse !== null) {
               visualTableMap.forEach((tableNum, table) => {
                 if(table === studytables[i].TableNum){
-                    console.warn(table)
+                    //console.warn(table)
                     newTableFilterArray.push(tableNum);
                 }
               });              
@@ -108,6 +109,7 @@ export default function SearchCourse(){
             {renderLabel()}
             <Dropdown
                 data={courseArray}
+                
                 labelField="CourseName"
                 valueField="CourseName"
                 searchField="CourseName"
@@ -116,7 +118,7 @@ export default function SearchCourse(){
                 onChange={item =>{
                     setValue(item.CourseName)
                     studyTablesInfo() 
-                    console.warn("what is value",value) 
+                    //console.warn("what is value",value) 
                 }}
                 searchPlaceholder="Search..."
             />
