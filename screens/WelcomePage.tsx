@@ -192,6 +192,7 @@ export default function WelcomePage(){
 };
 const styless = StyleSheet.create({
     container: {
+      // Testing the pull stuff
       // App background color
       //backgroundColor: '#ecf0e4',
       flex: 1, // sets the entire screen size to 1
