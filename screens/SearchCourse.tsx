@@ -6,6 +6,8 @@ import axios from 'axios';
 import { Dropdown } from 'react-native-element-dropdown';
 import { Canvas, rect, Rect,Box, SkiaView,Text as SkiaText, useFont, SkFont} from '@shopify/react-native-skia';
 
+NfcManager.start();
+
 interface courseDesc{
     CourseCode: string,
     CourseName: string,
