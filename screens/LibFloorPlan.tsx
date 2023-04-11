@@ -27,11 +27,13 @@ export default function LibFloorPlan(){
 
 const styles = StyleSheet.create({
    container:{
-    flex: 1
+    flex: 1,
+    backgroundColor: '#ecf0e4',
    },
 
    background:{
     flex: 1,
+    margin: '3%',
     resizeMode: 'contain'
    }
 

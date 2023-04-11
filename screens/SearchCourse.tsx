@@ -96,7 +96,7 @@ export default function SearchCourse(){
 
     const renderLabel = () =>{ 
             return(
-                <RNText>
+                <RNText style = {{color: 'black'}}>
                     Courses
                 </RNText>
             )
@@ -104,10 +104,13 @@ export default function SearchCourse(){
     return(
         <View style={styles.backgroundCol}>
             <View>
-                <RNText>Select course from the dropdown to see which tables have students studying for that course</RNText> 
+                <RNText style = {{color: 'black'}}>Select course from the dropdown to see which tables have students studying for that course</RNText> 
             </View>
             {renderLabel()}
             <Dropdown
+              iconColor='black'
+              activeColor='black'
+              
                 data={courseArray}
                 
                 labelField="CourseName"
