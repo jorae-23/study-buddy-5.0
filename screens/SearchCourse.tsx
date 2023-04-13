@@ -5,6 +5,7 @@ import { Alert } from 'react-native';
 import axios from 'axios';
 import { Dropdown } from 'react-native-element-dropdown';
 import { Canvas, rect, Rect,Box, SkiaView,Text as SkiaText, useFont, SkFont} from '@shopify/react-native-skia';
+import { SelectList } from 'react-native-dropdown-select-list';
 
 NfcManager.start();
 
@@ -12,6 +13,11 @@ interface courseDesc{
     CourseCode: string,
     CourseName: string,
 }
+interface courseDescN{
+  key: string,
+  value: string
+}
+
 
 interface StudyTable{
     Courses: string[],
@@ -24,6 +30,7 @@ interface StudyTable{
 type studytable = StudyTable[]
 
 type courses = courseDesc[]
+type coursesN = courseDescN[]
 
 export default function SearchCourse(){
   const visualTableMap = new Map()
@@ -57,6 +64,7 @@ export default function SearchCourse(){
     const [value, setValue] = useState<string | null>(null)
     const [myTableFilterArray, setMyTableFilterArray] = useState<React.ReactNode[]>([]);
     const [courseArray,setCourseArray] = useState<courses>([])
+    const [dropDownCourseArray, setDropDownCourseArray] = useState<coursesN>([])
 
     let studytables: studytable = []
     
@@ -67,9 +75,27 @@ export default function SearchCourse(){
         setCourseArray(courses);
       }
       loadCourses();
-      console.warn(courseArray)
+      //console.warn(courseArray)
     }, []);
 
+    useEffect(() => {
+      async function fillDropCourseArray(){
+        let newDropDownCourseArray: coursesN = [];
+        for(let i = 0; i< courseArray.length; i++){
+          let courseCode = courseArray[i].CourseCode
+          let courseName = courseArray[i].CourseName
+          let obj = {
+            key: courseCode,
+            value: courseName,
+          }
+          newDropDownCourseArray.push(obj);
+        }
+        setDropDownCourseArray(newDropDownCourseArray);
+      }
+      fillDropCourseArray()
+    }, [courseArray]);
+
+    
     async function studyTablesInfo() {
         setMyTableFilterArray([])
         let response2 = await axios.get(
@@ -107,7 +133,7 @@ export default function SearchCourse(){
                 <RNText style = {{color: 'black'}}>Select course from the dropdown to see which tables have students studying for that course</RNText> 
             </View>
             {renderLabel()}
-            <Dropdown
+            {/*<Dropdown
               iconColor='black'
               activeColor='black'
               
@@ -124,7 +150,13 @@ export default function SearchCourse(){
                     //console.warn("what is value",value) 
                 }}
                 searchPlaceholder="Search..."
-            />
+              /> */}
+               <SelectList
+                 setSelected ={(val:string) => setValue(val)}
+                 onSelect={studyTablesInfo}
+                 data = {dropDownCourseArray}
+                 save = "value"
+                 />
             <Canvas style={{width: 400, height: 400}}>
                 {myTableFilterArray}
             </Canvas>   

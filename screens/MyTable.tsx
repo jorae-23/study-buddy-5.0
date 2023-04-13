@@ -105,7 +105,7 @@ export default function MyTable() {
       displayTableCourses() 
 
   }, []);*/
-  async function displayTableCourses(){
+  async function displayTa(){
     let response = await axios.get('http://44.203.31.97:3001')
     let courses = response.data
     console.warn(response)

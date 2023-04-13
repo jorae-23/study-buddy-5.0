@@ -22,6 +22,7 @@
     "react-native": "0.71.3",
     "react-native-accordion-list-view": "^2.0.1",
     "react-native-device-info": "^10.4.0",
+    "react-native-dropdown-select-list": "^2.0.4",
     "react-native-element-dropdown": "^2.9.0",
     "react-native-gesture-handler": "^2.9.0",
     "react-native-nfc-manager": "^3.14.2",
