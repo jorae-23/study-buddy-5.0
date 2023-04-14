@@ -149,7 +149,7 @@ export default function SearchCourse(){
                     studyTablesInfo() 
                     //console.warn("what is value",value) 
                 }}
-                searchPlaceholder="Search..."
+                searchPlaceholder="Search............."
               /> */}
                <SelectList
                  setSelected ={(val:string) => setValue(val)}
