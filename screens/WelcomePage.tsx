@@ -29,16 +29,29 @@ export default function WelcomePage(){
   // Stuff for the drop down of sections
   const sections = [
     { title: 'About Us',
-      content: 'Explanation of the company',
+      content: 'Study Buddy is a mobile application developed by a team of 4 seniors at Rhodes College.' +
+               'The app is designed to simplify the process of finding library study space and buddies for college students.' +
+               'Students can easily mark their table as occupied by scanning an NFC tag located on a table and indicating' +
+               'their willingness to collaborate by sharing the class they are studying for.',
     },
     { title: 'My Table Page',
-      content: 'Explanation of the page',
+      content: 'You can view all information regarding the table you are seated.\n\n' +
+               ' • "Secure Table" allows you to scan the NFC tag at your desired table.\n' +
+               ' • "Leave Table" allows you to release the table for other students to use.\n' +
+               ' • "Share" allows you to broadcast the course(s) you are studying and invite others to join you.\n' +
+               ' • View your table Status, Courses, Study Buddies, and Seats when you scan a NFC tag at your table.\n' +
+               ' • Use the dropdown in the Courses section to select the course you are studying.\n' +
+               ' • Check the Seats section to view which seats are open and closed at the table.',
     },
     { title: 'Search Course Page',
-      content: 'Explanation of the page',
+      content: 'When searching for a place to study in the library, you can filter by courses currently being studied.' + 
+               'You may search for a course by name or code (i.e. COMP 141) to recieve infomation about where.' +
+               'that course is being studied.',
     },
     { title: 'Library Layout Page',
-      content: 'Explanation of the page',
+      content: 'You may manually search for a seat in the library by looking through the floor plans. Open ' +
+               'tables will be marked in green and closed tables will be marked in red. Tables that are ' +
+               'currently sharing will be marked in yellow.',
     }
   ];
   
