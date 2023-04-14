@@ -300,7 +300,7 @@ const styless = StyleSheet.create({
     },
     dropBox: { 
       backgroundColor: '#fbe29c',
-      padding: '3%',
+      padding: '4%',
       marginBottom: '3%'
     },
     dropBoxText1: {
