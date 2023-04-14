@@ -1,10 +1,9 @@
 import React, {useState, useCallback, useEffect}from 'react';
-import {View, Text as RNText ,TouchableOpacity, StyleSheet, Button} from 'react-native';
+import {View, Text as RNText, TouchableOpacity, StyleSheet, Image, ImageBackground} from 'react-native';
 import NfcManager, {NfcTech} from 'react-native-nfc-manager';
 import { Alert } from 'react-native';
 import axios from 'axios';
-import { Dropdown } from 'react-native-element-dropdown';
-import { Canvas, rect, Rect,Box, SkiaView,Text as SkiaText, useFont, SkFont} from '@shopify/react-native-skia';
+import { Canvas, rect, Rect, Box, SkiaView, Text as SkiaText, useFont, SkFont} from '@shopify/react-native-skia';
 import { SelectList } from 'react-native-dropdown-select-list';
 
 NfcManager.start();
@@ -17,7 +16,6 @@ interface courseDescN{
   key: string,
   value: string
 }
-
 
 interface StudyTable{
     Courses: string[],
@@ -65,6 +63,7 @@ export default function SearchCourse(){
     const [myTableFilterArray, setMyTableFilterArray] = useState<React.ReactNode[]>([]);
     const [courseArray,setCourseArray] = useState<courses>([])
     const [dropDownCourseArray, setDropDownCourseArray] = useState<coursesN>([])
+    const [tableArray, setTableArray] = useState<number[]>([])
 
     let studytables: studytable = []
     
@@ -107,6 +106,7 @@ export default function SearchCourse(){
           for (let j = 0; j < studytables[i].Courses.length; j++) {
             let currentCourse = studytables[i].Courses[j];
             if (currentCourse === value && currentCourse !== null) {
+              setTableArray([...tableArray, studytables[i].TableNum])
               visualTableMap.forEach((tableNum, table) => {
                 if(table === studytables[i].TableNum){
                     //console.warn(table)
@@ -119,7 +119,6 @@ export default function SearchCourse(){
         setMyTableFilterArray(newTableFilterArray);
       } 
       
-
     const renderLabel = () =>{ 
             return(
                 <RNText style = {{color: 'black'}}>
@@ -128,21 +127,38 @@ export default function SearchCourse(){
             )
     }
     return(
-        <View style={styles.backgroundCol}>
-            <View>
-                <RNText style = {{color: 'black'}}>Select course from the dropdown to see which tables have students studying for that course</RNText> 
+        <View style={styles.container}>
+          <ImageBackground source={require('./Background.png')} style={[styles.imageBackground]}>
+            <View style={styles.introTextContainer}>
+                <View style={styles.introBox}>
+                  <RNText style={styles.introText}>Select a course you would like to study:</RNText> 
+                </View>
             </View>
-            {renderLabel()}
-          
-               <SelectList
-                 setSelected ={(val:string) => setValue(val)}
-                 onSelect={studyTablesInfo}
-                 data = {dropDownCourseArray}
-                 save = "value"
-                 />
-            <Canvas style={{width: 400, height: 400}}>
-                {myTableFilterArray}
-            </Canvas>   
+            <View style={styles.dropdownContainer}>
+              <SelectList
+                  setSelected ={(val:string) => setValue(val)}
+                  onSelect={studyTablesInfo}
+                  data = {dropDownCourseArray}
+                  save = "value"
+                  searchPlaceholder='Search'
+                  boxStyles={styles.boxStyle}
+                  inputStyles={styles.inputStyle}
+                  dropdownStyles={styles.dropdownStyle}
+                  dropdownTextStyles={styles.dropDownTextStyle}
+              />
+            </View> 
+            <View style={styles.imageContainer}>
+              <Image source={require('./Courses.png')} style={[styles.image]}></Image>
+            </View>
+            <View style={styles.courseContainer}>
+              <View style={styles.titleBox}>
+                <RNText style={styles.titleText}>Course Description</RNText>
+              </View>
+              <View style={styles.courseBox}>
+                <RNText style={styles.courseText}> Locations {tableArray} </RNText>
+              </View>
+            </View>
+          </ImageBackground>  
         </View>
         
     )
@@ -150,15 +166,105 @@ export default function SearchCourse(){
 const styles = StyleSheet.create({
 
   container:{
-    borderColor: "red",
-    borderWidth: 2,
-    backgroundColor: '#f0ffff',
-  },
-  backgroundCol: {
-    // App background color
+    flex: 1, // sets the entire screen size to 1
     backgroundColor: '#ecf0e4',
+  },
+  imageBackground:{
+    flex: 1,
+    resizeMode: 'cover',
+  },
+  introTextContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    marginTop: '3%',
+    //backgroundColor: 'white'
+  },
+  introBox: {
+    alignSelf: 'center',
+    padding: '1%',
+    height: '80%',
+    width: '90%',
+    borderRadius: 10,
+    backgroundColor: '#86cba6',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  introText: {
+    color: 'black',
+    fontSize: 20
+  },
+  dropdownContainer: {
+    //justifyContent: 'center',
+    margin: '2%',
+    
+  },
+  boxStyle: {
+    borderRadius: 10,
+    backgroundColor: '#fbe29c',
+    //padding: '3%',
+    width: '80%',
+    alignSelf: 'center',
+    borderWidth: 0
+  },
+  inputStyle: {
+    color: 'black',
+    fontSize: 15
+  },
+  dropdownStyle: {
+    backgroundColor: '#fbe29c',
+    width: '80%',
+    alignSelf: 'center',
+  },
+  dropDownTextStyle: {
+    color: 'black',
+    fontSize: 15
+  },
+  imageContainer: {
+    flex: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    //backgroundColor: 'pink'
+  },
+  image: {
+    resizeMode: 'contain',
+    width: '35%'
+  },
+  courseContainer: {
+    flex: 7,
+    justifyContent: 'center',
+    //backgroundColor: 'black'
+  },
+  titleBox: {
+    flex: 1,
+    borderRadius: 10,
+    padding: '3%',
+    backgroundColor: '#5488a5',
+    width: '90%',
+    height: '95%',
+    alignSelf: 'center'
+  },
+  titleText: {
+    fontSize: 20,
+    color: 'white'
+  },
+  courseBox: {
+    flex: 15,
+    borderRadius: 10,
+    backgroundColor: '#bedeff',
+    padding: '3%',
+    width: '90%',
+    height: '95%',
+    marginBottom: '3%',
+    alignSelf: 'center'
+  },
+  courseText: {
+    fontSize: 15,
+    color: 'black'
   }
 });
 
-
-
+/*
+<Canvas style={{width: 400, height: 400}}>
+                {myTableFilterArray}
+</Canvas>
+*/
