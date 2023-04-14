@@ -1,7 +1,7 @@
 import React, {useState, useEffect, SetStateAction} from 'react';
 import axios from 'axios';
 import DeviceInfo from 'react-native-device-info';
-import {View, Text, TouchableOpacity, StyleSheet, Image, ImageBackground,} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, Image, ImageBackground} from 'react-native';
 import reserveTable from './WelcomePage'
 import NfcManager, {NfcTech} from 'react-native-nfc-manager';
 import { Alert , Button} from 'react-native';
@@ -92,9 +92,10 @@ export default function MyTable() {
       }
 
   //all the info for your to style is right here 
-  const [courses, setCourses] = useState([]);
+  const [courses, setCourses] = useState<string[]>([]);
   const [tagNum, setTagNum] = useState(0);
   const [deviceid, setDeviceid] = useState('');
+  const [hasTable, setHasTable] = useState(false)
   const [tableNum, setTableNum] = useState(0);
   const [status, setStatus] =  useState('Closed')
   const [showAll, setShowAll] = useState(false)
@@ -137,6 +138,23 @@ export default function MyTable() {
     setStudentsAtTable(numOStu)
   }
 
+  async function checkIfUserReservedTable() {
+    const uniqueId = await DeviceInfo.getUniqueId();
+    let response = await axios.get(
+      'http://44.203.31.97:3001/data/api/curate/specific/studytables'
+    );
+    const studyTables = await response.data;
+    for (let i = 0; i < studyTables.length; i++) {
+      if (studyTables[i].deviceid === uniqueId) {
+        setCourses(studyTables[i].Courses);
+        setDeviceid(studyTables[i].deviceid);
+        setTableNum(studyTables[i].TableNum);
+        setTagNum(studyTables[i].TagNum);
+        await getNumOfStudents(studyTables[i].TableNum)
+        break;
+      }
+    }
+  }
 
   useEffect(() => {
     async function checkIfUserReservedTable() {
@@ -151,9 +169,11 @@ export default function MyTable() {
           setDeviceid(studyTables[i].deviceid);
           setTableNum(studyTables[i].TableNum);
           setTagNum(studyTables[i].TagNum);
+          setHasTable(true)
           await getNumOfStudents(studyTables[i].TableNum)
           break;
         }
+        setHasTable(false)
       }
     }
     checkIfUserReservedTable()
@@ -189,8 +209,11 @@ export default function MyTable() {
 
  
     async function addCourseToTable(){
-      axios.put(`http://44.203.31.97:3001/data/api/bruh/tcourses/${value}/${tableNum}`)
-      Alert.alert('alert for adding a course', `the public knows that ${value} is being studied at table ${tableNum}`)
+      if(value){
+        axios.put(`http://44.203.31.97:3001/data/api/bruh/tcourses/${value}/${tableNum}`)
+        Alert.alert('alert for adding a course', `the public knows that ${value} is being studied at table ${tableNum}`)
+        setCourses([...courses, value])
+      }
     }
    
   /*
@@ -206,7 +229,10 @@ export default function MyTable() {
   }, []) */
 
   return(
+    <View>
+     {hasTable ? 
     <View style={styles.container}>
+      
       <Text>Table Number: {tableNum}</Text>
       <TouchableOpacity onPress={reserveTable}>
               <Text  adjustsFontSizeToFit={true}>Scan a Tag</Text>
@@ -220,7 +246,7 @@ export default function MyTable() {
         <Modal isVisible={showBroadCastModal} backdropColor='white'>
           <Text>Select the class you want to share to </Text>
           <SelectList
-                 setSelected ={(val:string) => setValue(val)}
+                 setSelected ={(val:string | null) => setValue(val)}
                  data = {dropDownCourseArray}
                  onSelect={addCourseToTable}
                  save = "value"
@@ -253,11 +279,11 @@ export default function MyTable() {
       </View>
       <Text>Seats Occupied: {studentsAtTable}</Text>
       <Text>Seats Available: {}</Text>
-      
-      
-    </View>
+ 
+    </View> : <View><Text>You have not reserved a table yet</Text></View>}
+  </View>
   );
-}
+ }
 
 const styles = StyleSheet.create({
   container: {
