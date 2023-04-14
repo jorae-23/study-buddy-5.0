@@ -133,24 +133,7 @@ export default function SearchCourse(){
                 <RNText style = {{color: 'black'}}>Select course from the dropdown to see which tables have students studying for that course</RNText> 
             </View>
             {renderLabel()}
-            {/*<Dropdown
-              iconColor='black'
-              activeColor='black'
-              
-                data={courseArray}
-                
-                labelField="CourseName"
-                valueField="CourseName"
-                searchField="CourseName"
-                value={value}
-                search={true}
-                onChange={item =>{
-                    setValue(item.CourseName)
-                    studyTablesInfo() 
-                    //console.warn("what is value",value) 
-                }}
-                searchPlaceholder="Search............."
-              /> */}
+          
                <SelectList
                  setSelected ={(val:string) => setValue(val)}
                  onSelect={studyTablesInfo}
