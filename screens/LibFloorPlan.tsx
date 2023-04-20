@@ -8,6 +8,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack'
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { Box, Canvas, Rect, SkImage, rect, rrect, translate, transformOrigin } from '@shopify/react-native-skia';
 import FirstFloor from './../screens/FirstLevelCropped.png';
+import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 //import {Dimensions} from 'react-native';
 //import Image from 'react-native-scalable-image';
 
@@ -26,16 +27,17 @@ const screenHieght = height;
  
 const getTableStatus = (tableNumber: number | undefined) => {
     
-    const status = 'open' ;//(check database);
+    const status = 'occu' ;//(check database);
     const open = 'open';
 
    
-    if (status === open){
+    if (open.localeCompare(status) == 0){
         const color = 'green';
         return color;
     }
     const color = 'red';
     return color;
+
 };
 
 
@@ -59,8 +61,8 @@ export default function LibFloorPlan(){
                     {/* large tables */}
                     
                     <Box color = {getTableStatus(1)} box= {rrect(rect(screenWidth/2 +90, screenHieght/2 +135, 20, 20), 5, 5)}></Box>
-                    <Box color = {table2color} box= {rrect(rect(screenWidth/2 +90, screenHieght/2 +105, 20, 20), 5, 5)}></Box>
-                    <Box color={table3color} box= {rrect(rect(screenWidth/2 +60, screenHieght/2 +135, 20, 20), 5, 5)}></Box>
+                    <Box color = {getTableStatus(2)} box= {rrect(rect(screenWidth/2 +90, screenHieght/2 +105, 20, 20), 5, 5)}></Box>
+                    <Box color={getTableStatus(3)} box= {rrect(rect(screenWidth/2 +60, screenHieght/2 +135, 20, 20), 5, 5)}></Box>
                     <Box color = "green" box= {rrect(rect(screenWidth/2 +60, screenHieght/2 +105, 20, 20), 5, 5)}></Box>
                     <Box color = "green" box= {rrect(rect(screenWidth/2 +50, screenHieght/2 +62, 20, 20), 5, 5)}></Box>
                     {/* single seats */}
