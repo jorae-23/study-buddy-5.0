@@ -1,7 +1,7 @@
 import React, {useState, useEffect, SetStateAction} from 'react';
 import axios from 'axios';
 import DeviceInfo from 'react-native-device-info';
-import {View, Text, TouchableOpacity, StyleSheet, Image, ImageBackground} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, Image, ImageBackground, TurboModuleRegistry} from 'react-native';
 import reserveTable from './WelcomePage'
 import NfcManager, {NfcTech} from 'react-native-nfc-manager';
 import { Alert , Button} from 'react-native';
@@ -173,7 +173,7 @@ export default function MyTable() {
           await getNumOfStudents(studyTables[i].TableNum)
           break;
         }
-        setHasTable(false)
+        setHasTable(true) //setHasTable to true or false to see the page items
       }
     }
     checkIfUserReservedTable()
@@ -230,64 +230,114 @@ export default function MyTable() {
 
   return(
     <View>
-     {hasTable ? 
+     {hasTable ?
     <View style={styles.container}>
-      
-      <Text>Table Number: {tableNum}</Text>
-      <TouchableOpacity onPress={reserveTable}>
-              <Text  adjustsFontSizeToFit={true}>Scan a Tag</Text>
-      </TouchableOpacity>
-        <Text style = {{color: 'black'}}>My table</Text>
-
-        <TouchableOpacity onPress={toggleBroadCastModal}>
-          <Text style = {{color: 'black'}}>Broad Cast</Text>
-        </TouchableOpacity>
-
-        <Modal isVisible={showBroadCastModal} backdropColor='white'>
-          <Text>Select the class you want to share to </Text>
-          <SelectList
-                 setSelected ={(val:string | null) => setValue(val)}
-                 data = {dropDownCourseArray}
-                 onSelect={addCourseToTable}
-                 save = "value"
-           />
-          <Button title="Close Modal" onPress={() => setShowBroadCastModal(false)} />
-        </Modal>
-
-        {/*
-        <Canvas style={{width: 500, height: 500}}>
-            <Box box={rect(115,350,150,150)}></Box>
-  </Canvas> */}
-      
-    
-      <TouchableOpacity  onPress={reserveTable}>
-              <Text  adjustsFontSizeToFit={true}>Leave Table</Text>
-      </TouchableOpacity>
-      <View>
-        <Text>Status: {status}</Text>
-        <Text>Courses:</Text>
-        {renderedData.map((item,index) =>(
-          <Text key ={index}>{item}</Text>
-        ))
-        }
-        {!showAll && (
-          <TouchableOpacity onPress ={() => setShowAll(true)}>
-            <Text>See All...</Text>
+      <ImageBackground source={require('./BackgroundFaded.png')} style={[styles.imageBackground]}>
+        
+        <Text>Table {tableNum}</Text>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.box} onPress={reserveTable}>
+            <Text style={styles.boxText} adjustsFontSizeToFit={true}>Secure Table</Text>
           </TouchableOpacity>
-        )}
-        <Text>Study Buddies: {studentsAtTable}</Text>
-      </View>
-      <Text>Seats Occupied: {studentsAtTable}</Text>
-      <Text>Seats Available: {}</Text>
- 
+
+          <TouchableOpacity style={styles.box} onPress={reserveTable}>
+            <Text style = {styles.boxText} adjustsFontSizeToFit={true}>Leave Table</Text>
+          </TouchableOpacity>
+        </View>
+
+          {/*
+          <Canvas style={{width: 500, height: 500}}>
+              <Box box={rect(115,350,150,150)}></Box>
+      </Canvas> */}
+          
+        <View style={styles.middleContainer}>
+          <View style={styles.sectionsContainer}>
+            <Text>Status: {status}</Text>
+
+            <Text>Courses:</Text>
+            {renderedData.map((item,index) =>(
+              <Text key ={index}>{item}</Text>
+            ))
+            }
+            {!showAll && (
+              <TouchableOpacity onPress ={() => setShowAll(true)}>
+                <Text>See All...</Text>
+              </TouchableOpacity>
+            )}
+
+            <Text>Study Buddies: {studentsAtTable}</Text>
+
+            <Text>Seats Occupied: {studentsAtTable}</Text>
+            <Text>Seats Available: {}</Text>
+
+            <TouchableOpacity onPress={toggleBroadCastModal}>
+              <Text style = {{color: 'black'}}>Broad Cast</Text>
+            </TouchableOpacity>
+
+            <Modal isVisible={showBroadCastModal} backdropColor='white'>
+              <Text>Select the class you want to share to </Text>
+              <SelectList
+                    setSelected ={(val:string | null) => setValue(val)}
+                    data = {dropDownCourseArray}
+                    onSelect={addCourseToTable}
+                    save = "value"
+              />
+              <Button title="Close Modal" onPress={() => setShowBroadCastModal(false)} />
+            </Modal>
+          </View>
+        </View>
+      </ImageBackground>
     </View> : <View><Text>You have not reserved a table yet</Text></View>}
   </View>
   );
- }
+ };
 
 const styles = StyleSheet.create({
   container: {
     // App background color
-    backgroundColor: '#ecf0e4',
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
   },
+  imageBackground: {
+    flex: 1,
+    resizeMode: 'cover',
+  },
+  buttonContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  box: {
+    flex: 1,
+    padding: '3%',
+    marginHorizontal: '3%',
+    height: '70%',
+    width: '100%',
+    borderRadius: 10,
+    backgroundColor: '#86cba6',
+    justifyContent: 'center',
+  },
+  boxText: {
+    fontSize: 18,
+    fontWeight: '500',
+    color: 'black',
+    textAlign: 'center',
+  },
+  middleContainer: {
+    flex: 5.5,
+    alignContent: 'center',
+  },
+  sectionsContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  broadcastContainer: {},
+    //the button within this container should be at the bottom right corner
+
+    
+
+
 });
