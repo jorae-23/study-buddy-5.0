@@ -25,13 +25,18 @@ const screenHieght = height;
 
 /* Here i'm thinking a getTableStatus function that takes in a table number, checks the database, if open then return the string "green", else return "red" */
  
-const getTableStatus = (tableNumber: number | undefined) => {
+const getTableStatus = (tableNumber: number) => {
     
-    const status = 'occu' ;//(check database);
+    //const status =  getNumOfStudents(tableNumber) ;//(check database);
+    const status = 0;
     const open = 'open';
+   
+    //if (tableNumber > 3){
+        //status = 'open';
+    //}
 
    
-    if (open.localeCompare(status) == 0){
+    if (status == 0){
         const color = 'green';
         return color;
     }
@@ -40,9 +45,12 @@ const getTableStatus = (tableNumber: number | undefined) => {
 
 };
 
-
-const table2color = "green";
-const table3color = "yellow";
+async function getNumOfStudents(tableNum: number | undefined){
+    const response = await axios.get(`http://44.203.31.97:3001/data/api/g/totalStudents/${tableNum}`)
+    const numOStu:number =  await response.data[0].num_occupied_seats
+    //setStudentsAtTable(numOStu)
+    return numOStu;
+  };
 
 export default function LibFloorPlan(){
    
@@ -62,12 +70,12 @@ export default function LibFloorPlan(){
                     
                     <Box color = {getTableStatus(1)} box= {rrect(rect(screenWidth/2 +90, screenHieght/2 +135, 20, 20), 5, 5)}></Box>
                     <Box color = {getTableStatus(2)} box= {rrect(rect(screenWidth/2 +90, screenHieght/2 +105, 20, 20), 5, 5)}></Box>
-                    <Box color={getTableStatus(3)} box= {rrect(rect(screenWidth/2 +60, screenHieght/2 +135, 20, 20), 5, 5)}></Box>
-                    <Box color = "green" box= {rrect(rect(screenWidth/2 +60, screenHieght/2 +105, 20, 20), 5, 5)}></Box>
-                    <Box color = "green" box= {rrect(rect(screenWidth/2 +50, screenHieght/2 +62, 20, 20), 5, 5)}></Box>
+                    <Box color= {getTableStatus(3)} box= {rrect(rect(screenWidth/2 +60, screenHieght/2 +135, 20, 20), 5, 5)}></Box>
+                    <Box color = {getTableStatus(4)} box= {rrect(rect(screenWidth/2 +60, screenHieght/2 +105, 20, 20), 5, 5)}></Box>
+                    <Box color = {getTableStatus(5)} box= {rrect(rect(screenWidth/2 +50, screenHieght/2 +62, 20, 20), 5, 5)}></Box>
                     {/* single seats */}
-                    <Box color = "red" box= {rrect(rect(screenWidth/2 +96, screenHieght/2 +79, 10, 10), 2, 2)}></Box>
-                    <Box color = "green" box= {rrect(rect(screenWidth/2 +96, screenHieght/2 +70, 10, 10), 2, 2)}></Box>
+                    <Box color = {getTableStatus(6)} box= {rrect(rect(screenWidth/2 +96, screenHieght/2 +79, 10, 10), 2, 2)}></Box>
+                    <Box color = {getTableStatus(7)} box= {rrect(rect(screenWidth/2 +96, screenHieght/2 +70, 10, 10), 2, 2)}></Box>
                 </Canvas>
             </View>
         </SafeAreaView>
