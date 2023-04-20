@@ -51,6 +51,10 @@ export default function MyTable() {
       async function updateTableStatus(tableNum : number | undefined){
         await axios.put(`http://44.203.31.97:3001/data/api/g/c/${tableNum}`)
       }
+
+      async function updateSeatStatus(tagNum : number | undefined){
+        await axios.put(`http://44.203.31.97:3001/data/api/bruh/${tagNum}`)
+      }
     
       async function putUniqueDeviceId(tagNum: number | undefined){
         const uniqueId =  await DeviceInfo.getUniqueId()
@@ -65,7 +69,6 @@ export default function MyTable() {
     
         async function reserveTable() {
         try {
-          
           Alert.alert('Scan button pressed', 'looking for tag to scan')
           
           // register for the NFC tag with NDEF in it
@@ -76,9 +79,19 @@ export default function MyTable() {
     
           const tagID = tag?.id
           const tagNum =  await getTagNumber(tagID)
-          const tableNum = await getTableNum(tagNum)
+          const tableNums = await getTableNum(tagNum)
+          setTableNum(tableNums)
+          await handleStatus()
           await updateTableStatus(tableNum)
+          await updateSeatStatus(tagNum)
           await putUniqueDeviceId(tagNum)
+          
+         
+
+          await getNumOfStudents(tableNum)
+
+          setHasTable(true)
+  
           Alert.alert(`You have reserved table ${tableNum} from scanning tag ${tagNum}`)
     
          // handleTableStatus()
@@ -92,12 +105,12 @@ export default function MyTable() {
       }
 
   //all the info for your to style is right here 
-  const [courses, setCourses] = useState<string[]>([]);
+  const [coursesAtTable, setCoursesAtTable] = useState<string[]>([]);
   const [tagNum, setTagNum] = useState(0);
   const [deviceid, setDeviceid] = useState('');
   const [hasTable, setHasTable] = useState(false)
   const [tableNum, setTableNum] = useState(0);
-  const [status, setStatus] =  useState('Closed')
+  const [status, setStatus] =  useState('closed')
   const [showAll, setShowAll] = useState(false)
   const [studentsAtTable, setStudentsAtTable] = useState(0)
   const [courseArray,setCourseArray] = useState<courses>([])
@@ -105,21 +118,36 @@ export default function MyTable() {
   const [dropDownCourseArray, setDropDownCourseArray] = useState<coursesN>([])
 
   const [showBroadCastModal, setShowBroadCastModal] = useState(false);
+  const [coursesIamStudying, setCoursesIamStudying] = useState<string[]>([])
 
+   async function handleStatus(){
+    const respone =  await axios.get(`http://44.203.31.97:3001/data/api/tables/status/${tableNum}`)
+    const tableStatus: boolean =  await respone.data[0].TableStatusFree
   
+    if(tableStatus){
+      setStatus('closed')
+    }
+    if(coursesAtTable.length> 0){
+      setStatus('sharing for studying')
+    }
+  }
+
+  function openToEveryOne(){
+    setStatus('open to anyone')
+  }
 
   const toggleBroadCastModal = () =>{
     setShowBroadCastModal(!showBroadCastModal)
   }
 
 
-  const renderedData = showAll ? courses: courses.slice(0,2)
+  const renderedData = showAll ? coursesAtTable: coursesAtTable.slice(0,2)
 
-  if(!Object.is(courses, [])){
+  /*if(Object.is(coursesAtTable, []) ){
     useEffect(() =>{
-      setStatus('sharing')
+      setStatus('sharing for studying')
     }, []);
-  }
+  }*/
 
   
   /*useEffect(() =>{
@@ -138,23 +166,13 @@ export default function MyTable() {
     setStudentsAtTable(numOStu)
   }
 
-  async function checkIfUserReservedTable() {
-    const uniqueId = await DeviceInfo.getUniqueId();
-    let response = await axios.get(
-      'http://44.203.31.97:3001/data/api/curate/specific/studytables'
-    );
-    const studyTables = await response.data;
-    for (let i = 0; i < studyTables.length; i++) {
-      if (studyTables[i].deviceid === uniqueId) {
-        setCourses(studyTables[i].Courses);
-        setDeviceid(studyTables[i].deviceid);
-        setTableNum(studyTables[i].TableNum);
-        setTagNum(studyTables[i].TagNum);
-        await getNumOfStudents(studyTables[i].TableNum)
-        break;
-      }
-    }
+  async function getSeatsAtTable(tableNum: number | undefined){
+    const response = await axios.get(`http://44.203.31.97:3001/data/api/table/numSeats/${tableNum}`)
+    const numSeatsAtTable:number =  await response.data[0].count
+    return numSeatsAtTable
   }
+
+
 
   useEffect(() => {
     async function checkIfUserReservedTable() {
@@ -165,7 +183,7 @@ export default function MyTable() {
       const studyTables = await response.data;
       for (let i = 0; i < studyTables.length; i++) {
         if (studyTables[i].deviceid === uniqueId) {
-          setCourses(studyTables[i].Courses);
+          setCoursesAtTable(studyTables[i].Courses);
           setDeviceid(studyTables[i].deviceid);
           setTableNum(studyTables[i].TableNum);
           setTagNum(studyTables[i].TagNum);
@@ -212,10 +230,76 @@ export default function MyTable() {
       if(value){
         axios.put(`http://44.203.31.97:3001/data/api/bruh/tcourses/${value}/${tableNum}`)
         Alert.alert('alert for adding a course', `the public knows that ${value} is being studied at table ${tableNum}`)
-        setCourses([...courses, value])
+        setCoursesAtTable([...coursesAtTable, value])
+        setCoursesIamStudying([...coursesIamStudying, value])
+        setStatus('sharing for studying')
       }
     }
-   
+
+
+    async function leaveTable(){
+     //logic for removing deviceid from table
+      try{
+        await axios.put(`http://44.203.31.97:3001/data/api/remove/deviceId/${tagNum}`)
+      } catch(error){
+        console.warn('error occured after removing deviceid', error)
+      }
+
+      //logic for labeling seat as open
+      try{
+        await axios.put(`http://44.203.31.97:3001/data/api/seats/open/${tagNum}`)
+        setStudentsAtTable(studentsAtTable -1)
+      }catch(error){
+        console.warn('occured after opening seat ', error)
+      }
+
+      //logic for deleting courses that the user was studying for from the courses at table array
+      for(let i = 0; i< coursesIamStudying.length; i++){
+        try{
+        await axios.put(`http://44.203.31.97:3001/data/api/update/Courses/${coursesIamStudying[i]}/${tableNum}`)
+        }catch(error){
+          console.warn('error occred while deleting deviceId and course', error)
+        }
+        for(let j = 0; j< coursesAtTable.length;j++){
+          if(coursesIamStudying[i] === coursesAtTable[j]){
+            let updatedCoursesAtTable =  [...coursesAtTable]
+            updatedCoursesAtTable.splice(j,1)
+            setCoursesAtTable(updatedCoursesAtTable)
+            break
+          }
+        }
+      }
+
+      //logic to lable the table as unreserved if all seats are empty at table
+      const numOfSeats:number = await getSeatsAtTable(tableNum)
+      let response = await axios.get(
+        'http://44.203.31.97:3001/data/api/curate/specific/studytables'
+      );
+      const studyTables = await response.data;
+      let i = 0
+      let seatsEmpty: number = 0
+      while(i < studyTables.length){
+        if(tableNum ===  studyTables[i].TableNum  && studyTables[i].SeatStatusFree === true){
+            seatsEmpty++
+            if(seatsEmpty == numOfSeats){
+              handleStatus()
+              try{
+              await axios.put(`http://44.203.31.97:3001/data/api/Tables/open/${tableNum}`)
+              setCoursesAtTable([])
+              }catch( error){
+                console.warn('error occured when updating table to open', error)
+              }
+              break; 
+            }
+        }
+        i++
+      }
+      setHasTable(false)
+      setCoursesIamStudying([])
+      
+
+      Alert.alert(`you have left table ${tableNum}`)
+    }
   /*
   useEffect(() =>{
     async function getNumOfStudents(tableNum: number | undefined){
@@ -235,12 +319,16 @@ export default function MyTable() {
       
       <Text>Table Number: {tableNum}</Text>
       <TouchableOpacity onPress={reserveTable}>
-              <Text  adjustsFontSizeToFit={true}>Scan a Tag</Text>
+              <Text  adjustsFontSizeToFit={true}>Secure Table</Text>
       </TouchableOpacity>
         <Text style = {{color: 'black'}}>My table</Text>
 
         <TouchableOpacity onPress={toggleBroadCastModal}>
-          <Text style = {{color: 'black'}}>Broad Cast</Text>
+          <Text style = {{color: 'black'}}>Broad Cast Course</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={openToEveryOne}>
+          <Text style = {{color: 'black'}}>Open Table to Everyone</Text>
         </TouchableOpacity>
 
         <Modal isVisible={showBroadCastModal} backdropColor='white'>
@@ -257,17 +345,17 @@ export default function MyTable() {
         {/*
         <Canvas style={{width: 500, height: 500}}>
             <Box box={rect(115,350,150,150)}></Box>
-  </Canvas> */}
+       </Canvas> */}
       
     
-      <TouchableOpacity  onPress={reserveTable}>
+      <TouchableOpacity  onPress={leaveTable}>
               <Text  adjustsFontSizeToFit={true}>Leave Table</Text>
       </TouchableOpacity>
       <View>
         <Text>Status: {status}</Text>
         <Text>Courses:</Text>
         {renderedData.map((item,index) =>(
-          <Text key ={index}>{item}</Text>
+          <Text key ={index}>{item}</Text> //this puts the courses at a table
         ))
         }
         {!showAll && (
@@ -280,7 +368,13 @@ export default function MyTable() {
       <Text>Seats Occupied: {studentsAtTable}</Text>
       <Text>Seats Available: {}</Text>
  
-    </View> : <View><Text>You have not reserved a table yet</Text></View>}
+    </View> : 
+    <View>
+      <Text style={styles.noTable}>You have not reserved a table yet</Text>
+      <TouchableOpacity onPress={reserveTable}>
+              <Text style={styles.scanTag}  adjustsFontSizeToFit={true}>Secure table</Text>
+      </TouchableOpacity>
+    </View>}
   </View>
   );
  }
@@ -289,5 +383,12 @@ const styles = StyleSheet.create({
   container: {
     // App background color
     backgroundColor: '#ecf0e4',
+
   },
+  scanTag:{
+    textAlign: 'center'
+  },
+  noTable:{
+    textAlign:'center'
+  }
 });

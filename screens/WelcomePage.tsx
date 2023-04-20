@@ -156,6 +156,10 @@ export default function WelcomePage(){
       NfcManager.cancelTechnologyRequest();
     }
   }
+
+  function leaveTable(){
+    
+  }
   
 
   return (
@@ -167,7 +171,7 @@ export default function WelcomePage(){
               <Text style={styless.boxText} adjustsFontSizeToFit={true}>Secure Table</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styless.box} onPress={reserveTable}>
+            <TouchableOpacity style={styless.box} onPress={leaveTable}>
               <Text style={styless.boxText} adjustsFontSizeToFit={true}>Leave Table</Text>
             </TouchableOpacity>
           </View>
