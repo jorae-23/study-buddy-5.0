@@ -20,6 +20,10 @@ const {width, height} = Dimensions.get('window');
 const screenWidth = width;
 const screenHieght = height;
 
+const table1color = "red";
+const table2color = "green";
+const table3color = "yellow";
+
 export default function LibFloorPlan(){
    
     return(
@@ -34,11 +38,16 @@ export default function LibFloorPlan(){
                 
                 
                 <Canvas style={styles.tables}>
-                    <Box color = "yellow" box= {rrect(rect(screenWidth/2 -10, screenHieght/2 -10, 20, 20), 5, 5)}></Box>
-                    <Box color = "red" box= {rrect(rect(322, 540, 20, 20), 5, 5)}></Box>
-                    <Box color = "blue" box= {rrect(rect(322, 493, 20, 20), 5, 5)}></Box>
-                    <Box color = "red" box= {rrect(rect(330, 454, 10, 10), 2, 2)}></Box>
-                    <Box color = "green" box= {rrect(rect(330, 443, 10, 10), 2, 2)}></Box>
+                    {/* large tables */}
+                    
+                    <Box color = {table1color} box= {rrect(rect(screenWidth/2 +90, screenHieght/2 +135, 20, 20), 5, 5)}></Box>
+                    <Box color = {table2color} box= {rrect(rect(screenWidth/2 +90, screenHieght/2 +105, 20, 20), 5, 5)}></Box>
+                    <Box color={table3color} box= {rrect(rect(screenWidth/2 +60, screenHieght/2 +135, 20, 20), 5, 5)}></Box>
+                    <Box color = "green" box= {rrect(rect(screenWidth/2 +60, screenHieght/2 +105, 20, 20), 5, 5)}></Box>
+                    <Box color = "green" box= {rrect(rect(screenWidth/2 +50, screenHieght/2 +62, 20, 20), 5, 5)}></Box>
+                    {/* single seats */}
+                    <Box color = "red" box= {rrect(rect(screenWidth/2 +96, screenHieght/2 +79, 10, 10), 2, 2)}></Box>
+                    <Box color = "green" box= {rrect(rect(screenWidth/2 +96, screenHieght/2 +70, 10, 10), 2, 2)}></Box>
                 </Canvas>
             </View>
         </SafeAreaView>
@@ -76,14 +85,10 @@ const styles = StyleSheet.create({
     ... StyleSheet.absoluteFillObject,
     justifyContent: 'center',
     alignItems: 'center',
-    
-    //position: 'absolute',
 
    }, 
 
    table1:{
-    height: 20,
-    width: 20,
     color: 'red',
    }
 
