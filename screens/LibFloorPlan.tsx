@@ -20,7 +20,25 @@ const {width, height} = Dimensions.get('window');
 const screenWidth = width;
 const screenHieght = height;
 
-const table1color = "red";
+
+
+/* Here i'm thinking a getTableStatus function that takes in a table number, checks the database, if open then return the string "green", else return "red" */
+ 
+const getTableStatus = (tableNumber: number | undefined) => {
+    
+    const status = 'open' ;//(check database);
+    const open = 'open';
+
+   
+    if (status === open){
+        const color = 'green';
+        return color;
+    }
+    const color = 'red';
+    return color;
+};
+
+
 const table2color = "green";
 const table3color = "yellow";
 
@@ -40,7 +58,7 @@ export default function LibFloorPlan(){
                 <Canvas style={styles.tables}>
                     {/* large tables */}
                     
-                    <Box color = {table1color} box= {rrect(rect(screenWidth/2 +90, screenHieght/2 +135, 20, 20), 5, 5)}></Box>
+                    <Box color = {getTableStatus(1)} box= {rrect(rect(screenWidth/2 +90, screenHieght/2 +135, 20, 20), 5, 5)}></Box>
                     <Box color = {table2color} box= {rrect(rect(screenWidth/2 +90, screenHieght/2 +105, 20, 20), 5, 5)}></Box>
                     <Box color={table3color} box= {rrect(rect(screenWidth/2 +60, screenHieght/2 +135, 20, 20), 5, 5)}></Box>
                     <Box color = "green" box= {rrect(rect(screenWidth/2 +60, screenHieght/2 +105, 20, 20), 5, 5)}></Box>
