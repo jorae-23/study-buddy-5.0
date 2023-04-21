@@ -123,15 +123,15 @@ export default function MyTable() {
     console.warn(tableStatus)
   
     if(tableStatus){
-      setStatus('closed')
+      setStatus('Closed to public.')
     }
     if(coursesAtTable.length> 0){
-      setStatus('sharing for studying')
+      setStatus('Open for studying a course.')
     }
   }
 
   function openToEveryOne(){
-    setStatus('open to anyone')
+    setStatus('Open for anyone to join.')
   }
 
   const toggleBroadCastModal = () =>{
@@ -236,10 +236,10 @@ export default function MyTable() {
     async function addCourseToTable(){
       if(value){
         axios.put(`http://44.203.31.97:3001/data/api/bruh/tcourses/${value}/${tableNum}`)
-        Alert.alert('alert for adding a course', `the public knows that ${value} is being studied at table ${tableNum}`)
+        Alert.alert('Alert for adding a course', `The public will know that ${value} is being studied at table ${tableNum}.`)
         setCoursesAtTable([...coursesAtTable, value])
         setCoursesIamStudying([...coursesIamStudying, value])
-        setStatus('sharing for studying')
+        setStatus('Open for studying a course.')
       }
     }
 
@@ -249,7 +249,7 @@ export default function MyTable() {
       try{
         await axios.put(`http://44.203.31.97:3001/data/api/remove/deviceId/${tagNum}`)
       } catch(error){
-        console.warn('error occured after removing deviceid', error)
+        console.warn('Error occured after removing device id', error)
       }
 
       //logic for labeling seat as open
@@ -257,7 +257,7 @@ export default function MyTable() {
         await axios.put(`http://44.203.31.97:3001/data/api/seats/open/${tagNum}`)
         setStudentsAtTable(studentsAtTable -1)
       }catch(error){
-        console.warn('occured after opening seat ', error)
+        console.warn('Occured after opening seat ', error)
       }
 
       //logic for deleting courses that the user was studying for from the courses at table array
@@ -303,69 +303,111 @@ export default function MyTable() {
       }
       setCoursesIamStudying([])
       setHasTable(false)
-      Alert.alert(`you have left table ${tableNum}`)
+      Alert.alert(`You have left table ${tableNum}.`)
     }
 
   return(
-    <View>
-     {hasTable ? 
-    <View style={styles.container}>
-      
-      <Text>Table Number: {tableNum}</Text>
-      <TouchableOpacity onPress={reserveTable}>
-              <Text  adjustsFontSizeToFit={true}>Secure Table</Text>
-      </TouchableOpacity>
-        <Text style = {{color: 'black'}}>My table</Text>
+      <View style={styles.container}>
+          {hasTable ? 
+            <View style={styles.container}>
+              <ImageBackground source={require('./Background.png')} style={[styles.imageBackground]}>
+              <View style={styles.imageTableContainer}>
+                <View style ={styles.imageTableBox}>
+                  <Image source={require('./Table.png')} style={[styles.imageTable]}></Image>
+                </View>
+              </View>
 
-        <TouchableOpacity onPress={toggleBroadCastModal}>
-          <Text style = {{color: 'black'}}>Broad Cast Course</Text>
-        </TouchableOpacity>
+              <View style={styles.boxContainer}>
+                <TouchableOpacity style={styles.box} onPress={reserveTable}>
+                  <Text style={styles.boxText} adjustsFontSizeToFit={true}>Secure Table</Text>
+                </TouchableOpacity>
 
-        <TouchableOpacity onPress={openToEveryOne}>
-          <Text style = {{color: 'black'}}>Open Table to Everyone</Text>
-        </TouchableOpacity>
+                <TouchableOpacity style={styles.box} onPress={leaveTable}>
+                  <Text style={styles.boxText} adjustsFontSizeToFit={true}>Leave Table</Text>
+                </TouchableOpacity>
+              </View>
 
-        <Modal isVisible={showBroadCastModal} backdropColor='white'>
-          <Text>Select the class you want to share to </Text>
-          <SelectList
-                 setSelected ={(val:string | null) => setValue(val)}
-                 data = {dropDownCourseArray}
-                 onSelect={addCourseToTable}
-                 save = "value"
-           />
-          <Button title="Close Modal" onPress={() => setShowBroadCastModal(false)} />
-        </Modal>
+              <View style={styles.courseContainer}>
+                <View style={styles.titleBox}>
+                  <Text style={styles.titleText} adjustsFontSizeToFit={true}>Table {tableNum} Information</Text>
+                  {/*<Text>Table Number: {tableNum}</Text>*/}
+                </View>
 
-      <TouchableOpacity  onPress={leaveTable}>
-              <Text  adjustsFontSizeToFit={true}>Leave Table</Text>
-      </TouchableOpacity>
-      <View>
-        <Text>Status: {status}</Text>
-        <Text>Courses:</Text>
-        {renderedData.map((item,index) =>(
-          <Text key ={index}>{item}</Text> //this puts the courses at a table
-        ))
-        }
-        {!showAll && (
-          <TouchableOpacity onPress ={() => setShowAll(true)}>
-            <Text>See All...</Text>
-          </TouchableOpacity>
-        )}
-        <Text>Study Buddies: {studentsAtTable}</Text>
-      </View>
-      <Text>Seats Occupied: {studentsAtTable}</Text>
-      <Text>Seats Available: {seatsFree}</Text>
- 
-    </View> : 
+                <View style={styles.courseBoxContainer}>
+                  <View style={styles.babyCourseBoxContainer}>
+                    <TouchableOpacity style={styles.babyCourseBox} onPress={toggleBroadCastModal}>
+                      <Text style={styles.babyBoxText} adjustsFontSizeToFit={true}>Add a Course</Text>
+                    </TouchableOpacity>
 
-    //this is what get's rendered if the user has no table reserved 
-    <View>
-      <Text style={styles.noTable}>You have not reserved a table yet</Text>
-      <TouchableOpacity onPress={reserveTable}>
-              <Text style={styles.scanTag}  adjustsFontSizeToFit={true}>Secure table</Text>
-      </TouchableOpacity>
-    </View>}
-  </View>
+                    <Modal 
+                      isVisible={showBroadCastModal} 
+                      backdropColor='#ecf0e4' 
+                      style={styles.modalBox}>
+                        <Text style = {{color: 'white', fontSize: 18, fontWeight: '500'}}> Select the class you want to share: </Text>
+                        <SelectList
+                              setSelected ={(val:string | null) => setValue(val)}
+                              data = {dropDownCourseArray}
+                              onSelect={addCourseToTable}
+                              save = "value"  
+                        />
+                        <Button title="Close Modal" onPress={() => setShowBroadCastModal(false)} />
+                    </Modal>
+
+                    <TouchableOpacity style={styles.babyCourseBox} onPress={openToEveryOne}>
+                      <Text style={styles.babyBoxText} adjustsFontSizeToFit={true}>Open Table</Text>
+                    </TouchableOpacity>
+                  </View>
+
+                  <View style={styles.listContainer}>
+                  
+                    <Text style={styles.listTitleText}>Status: {status}{'\n'}</Text>
+
+                    <Text style={styles.listTitleText}>Courses:</Text>
+                      {renderedData.map((item,index) =>(
+                        <Text key ={index}>{item}</Text> //this puts the courses at a table
+                      ))
+                      }
+                      {/*
+                      {!showAll && (
+                        <TouchableOpacity onPress ={() => setShowAll(true)}>
+                          <Text>See All...</Text>
+                        </TouchableOpacity>
+                      )}
+                      */}
+                    <Text style={styles.listTitleText}>{'\n'}Study Buddies: {studentsAtTable}{'\n'}</Text>
+
+                    {/*<Text>Seats Occupied: {studentsAtTable}</Text>*/}
+
+                    <Text style={styles.listTitleText}>Seats Available: {seatsFree}</Text>
+                  </View>
+                </View>
+              </View>
+            
+            </ImageBackground>
+          </View> : 
+          <View style={styles.container}>
+            <ImageBackground source={require('./Background.png')} style={[styles.imageBackground]}>
+              <View style={styles.noTableContainer}>
+                <View style={styles.noTableBox}>
+                  <Text style={styles.noTableText}>You have not secured a table yet.{'\n'}Tap the button below to secure a table.</Text>
+                </View>
+              </View>
+
+              <View style={styles.boxContainer}>
+              <TouchableOpacity style={styles.boxNoTable} onPress={reserveTable}>
+                <Text style={styles.boxText} adjustsFontSizeToFit={true}>Secure Table</Text>
+              </TouchableOpacity>
+              </View>
+            </ImageBackground>
+          </View>}
+            
+            {/*<View style={styles.boxContainer}>
+              <TouchableOpacity style={styles.box} onPress={reserveTable}>
+                <Text style={styles.boxText} adjustsFontSizeToFit={true}>Secure Table</Text>
+              </TouchableOpacity>
+            </View>
+            */}
+    </View>
   );
  }
 
@@ -375,10 +417,149 @@ const styles = StyleSheet.create({
     backgroundColor: '#ecf0e4',
 
   },
-  scanTag:{
-    textAlign: 'center'
+  imageTableContainer: {
+    flex: 1.5,
+    //backgroundColor: 'yellow'
   },
-  noTable:{
-    textAlign:'center'
+  imageTableBox: {
+    flex: 1,
+    borderRadius: 10,
+    //maxHeight: '50%',
+    width: '50%',
+    padding: '3%',
+    marginTop: '5%',
+    alignSelf: 'center',
+    backgroundColor: '#fbe29c',
+    z: 0
+  },
+  imageTable: {
+    flex: 1,
+    resizeMode: 'contain',
+    width: '100%',
+  },
+  courseContainer: {
+    flex: 5,
+    justifyContent: 'center',
+    //backgroundColor: 'black'
+  },
+  titleBox: {
+    flex: 1,
+    borderRadius: 10,
+    padding: '3%',
+    backgroundColor: '#5488a5',
+    width: '90%',
+    height: '95%',
+    alignSelf: 'center'
+  },
+  titleText: {
+    fontSize: 20,
+    color: 'white',
+    fontWeight: '500',
+  },
+  courseBoxContainer: {
+    flex: 15,
+    borderRadius: 10,
+    backgroundColor: '#bedeff',
+    padding: '3%',
+    width: '90%',
+    height: '95%',
+    marginBottom: '3%',
+    alignSelf: 'center'
+  },
+  babyCourseBoxContainer:{
+    flex: 1,
+    flexDirection: 'row', // sets the child elements to be horizontal
+    alignItems: 'flex-start',
+    justifyContent: 'space-around',
+    //backgroundColor: 'pink'
+  },
+  babyCourseBox: {
+    flex: 1, 
+    padding: '3%',
+    //maxHeight: '25%',
+    maxWidth: '45%',
+    borderRadius: 10,
+    backgroundColor: '#fbe29c',
+  },
+  babyBoxText: {
+    flex: 1,
+    fontSize: 18, 
+    fontWeight: '500',
+    color: 'black',
+    textAlign: 'center',
+    textAlignVertical: 'center'
+  },
+  listContainer:{
+    flex: 6,
+    padding: '3%'
+    //backgroundColor: 'yellow'
+  },
+  listTitleText: {
+    fontSize: 18,
+    fontWeight: '500',
+    color: 'black'
+  },
+  modalBox: {
+    flex: 1,
+    alignSelf: 'center',
+    marginTop: '50%',
+    marginBottom: '50%',
+    opacity: 1,
+    backgroundColor: '#bedeff',
+    padding: '3%',
+    alignContent: 'center',
+    borderRadius: 10
+  },
+  noTableContainer: {
+    flex: 0.15,
+    //backgroundColor:'red'
+  },
+  noTableBox: {
+    flex: 1,
+    padding: '3%',
+    marginTop: '5%',
+    //maxHeight: '25%',
+    borderRadius: 10,
+    alignSelf: 'center',
+    backgroundColor: '#bedeff'
+  },
+  noTableText:{
+    flex: 1,
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    color: 'black',
+    fontSize: 20
+  },
+  box: {
+    flex: 1, 
+    padding: '3%',
+    margin: '5%',
+    maxWidth: '50%',
+    borderRadius: 10,
+    backgroundColor: '#86cba6',
+  },
+  boxContainer: {
+    flex: 1,
+    flexDirection: 'row', // sets the child elements to be horizontal
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    //backgroundColor: "pink"
+  },
+  boxNoTable:{
+    flex: 1, 
+    padding: '3%',
+    margin: '5%',
+    maxHeight: '10%',
+    maxWidth: '50%',
+    borderRadius: 10,
+    backgroundColor: '#86cba6',
+  },
+  boxText:{
+    flex: 1,
+    fontSize: 18, 
+    fontWeight: '500',
+    color: 'black',
+    textAlign: 'center',
+    textAlignVertical: 'center'
   }
 });
