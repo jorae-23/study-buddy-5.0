@@ -63,7 +63,7 @@ export default function SearchCourse(){
     const [myTableFilterArray, setMyTableFilterArray] = useState<React.ReactNode[]>([]);
     const [courseArray,setCourseArray] = useState<courses>([])
     const [dropDownCourseArray, setDropDownCourseArray] = useState<coursesN>([])
-    const [tableArray, setTableArray] = useState<number[]>([])
+    const [tableArray, setTableArray] = useState<any[]>([])
 
     let studytables: studytable = []
     
@@ -102,21 +102,30 @@ export default function SearchCourse(){
           `http://44.203.31.97:3001/data/api/curate/specific/studytables`
         );
         studytables = await response2.data;
-        let tempArray:number[] = []
+        let tempArray= []
         //let newTableFilterArray: React.ReactNode[] = [];
         for (let i = 0; i < studytables.length; i++) {
           for (let j = 0; j < studytables[i].Courses.length; j++) {
             let currentCourse = studytables[i].Courses[j];
             if (currentCourse === value && currentCourse !== null) {
-              tempArray.push(studytables[i].TableNum)     
+              const response = await axios.get(`http://44.203.31.97:3001/data/api/table/emptySeats/${studytables[i].TableNum}`)
+              const emptySeats:number = await response.data[0].count
+              
+              let obj ={
+                floorLevel: 1,
+                tableNum: studytables[i].TableNum,
+                openSeats: emptySeats
+              }
+              tempArray.push(obj)
             }
           }
         }
-        let uniqueCourses: number[] = tempArray.filter((elem, index) => {
-          return tempArray.indexOf(elem) === index;
-        });
-        uniqueCourses.sort()
-        setTableArray(uniqueCourses)
+        let uniqueTempArray = tempArray.filter((obj, index, self) =>
+        index === self.findIndex((t) => (
+          t.floorLevel === obj.floorLevel && t.tableNum === obj.tableNum && t.openSeats === obj.openSeats
+        ))
+      );
+        setTableArray(uniqueTempArray)
     } 
       
     const renderLabel = () =>{ 
@@ -158,16 +167,18 @@ export default function SearchCourse(){
                 <RNText style={styles.titleText} adjustsFontSizeToFit={true}>Course Description</RNText>
               </View>
               <View style={styles.courseBox}>
-                  <RNText style={styles.courseText} adjustsFontSizeToFit={true}> Course Name </RNText>
+                  <RNText style={styles.courseText} adjustsFontSizeToFit={true}>{value}</RNText>
                   <RNText></RNText>
                   <RNText style={styles.courseText} adjustsFontSizeToFit={true}> Locations </RNText>
-                  <RNText style={styles.courseText} adjustsFontSizeToFit={true}>      Floor Level </RNText>
-                  <RNText style={styles.courseText} adjustsFontSizeToFit={true}>      Table Number </RNText>
-                  <RNText style={styles.courseText} adjustsFontSizeToFit={true}>      Open Seats </RNText>
-                  <RNText></RNText>
-                  <RNText style={styles.courseText} adjustsFontSizeToFit={true}>      Floor Level </RNText>
-                  <RNText style={styles.courseText} adjustsFontSizeToFit={true}>      Table Number </RNText>
-                  <RNText style={styles.courseText} adjustsFontSizeToFit={true}>      Open Seats </RNText>
+                 
+                  {tableArray.map((table) => (
+                  <View key={`${table.floorLevel}-${table.tableNum}`}>
+                    <RNText>    Floor Level: {table.floorLevel}</RNText>
+                    <RNText>    Table Number: {table.tableNum}</RNText>
+                    <RNText>    Open Seats: {table.openSeats}</RNText>
+                    <RNText></RNText>
+                  </View>))} 
+                  
               </View>
             </View>
           </ImageBackground>  
@@ -255,7 +266,7 @@ const styles = StyleSheet.create({
   },
   titleText: {
     fontSize: 20,
-    color: 'white'
+    color: 'white',
   },
   courseBox: {
     flex: 15,
