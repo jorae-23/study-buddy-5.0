@@ -2,7 +2,6 @@ import React, {useState, useEffect, SetStateAction} from 'react';
 import axios from 'axios';
 import DeviceInfo from 'react-native-device-info';
 import {View, Text, TouchableOpacity, StyleSheet, Image, ImageBackground} from 'react-native';
-import reserveTable from './WelcomePage'
 import NfcManager, {NfcTech} from 'react-native-nfc-manager';
 import { Alert , Button} from 'react-native';
 import { Canvas, rect, Rect,Box, SkiaView, useFont, SkFont} from '@shopify/react-native-skia';
@@ -81,13 +80,11 @@ export default function MyTable() {
           const tagNum =  await getTagNumber(tagID)
           const tableNums = await getTableNum(tagNum)
           setTableNum(tableNums)
-          await handleStatus()
+          handleStatus()
           await updateTableStatus(tableNum)
           await updateSeatStatus(tagNum)
           await putUniqueDeviceId(tagNum)
           
-         
-
           await getNumOfStudents(tableNum)
 
           setHasTable(true)
@@ -116,13 +113,14 @@ export default function MyTable() {
   const [courseArray,setCourseArray] = useState<courses>([])
   const [value, setValue] = useState<string | null>(null)
   const [dropDownCourseArray, setDropDownCourseArray] = useState<coursesN>([])
-
   const [showBroadCastModal, setShowBroadCastModal] = useState(false);
   const [coursesIamStudying, setCoursesIamStudying] = useState<string[]>([])
+  const [seatsFree, setSeatsFree] = useState(0)
 
    async function handleStatus(){
     const respone =  await axios.get(`http://44.203.31.97:3001/data/api/tables/status/${tableNum}`)
     const tableStatus: boolean =  await respone.data[0].TableStatusFree
+    console.warn(tableStatus)
   
     if(tableStatus){
       setStatus('closed')
@@ -225,6 +223,15 @@ export default function MyTable() {
     fillDropCourseArray()
   }, [courseArray]);
 
+  useEffect(() =>{
+    async function setEmptyCourses(){
+      const response = await axios.get(`http://44.203.31.97:3001/data/api/table/emptySeats/${tableNum}`)
+      const emptySeats:number = await response.data[0].count
+      setSeatsFree(emptySeats)
+    }
+    setEmptyCourses()
+  }, [])
+
  
     async function addCourseToTable(){
       if(value){
@@ -258,7 +265,7 @@ export default function MyTable() {
         try{
         await axios.put(`http://44.203.31.97:3001/data/api/update/Courses/${coursesIamStudying[i]}/${tableNum}`)
         }catch(error){
-          console.warn('error occred while deleting deviceId and course', error)
+          console.warn('error occred while deleting course', error)
         }
         for(let j = 0; j< coursesAtTable.length;j++){
           if(coursesIamStudying[i] === coursesAtTable[j]){
@@ -294,103 +301,79 @@ export default function MyTable() {
         }
         i++
       }
-      setHasTable(false)
       setCoursesIamStudying([])
-      
-
+      setHasTable(false)
       Alert.alert(`you have left table ${tableNum}`)
     }
-  /*
-  useEffect(() =>{
-    async function getNumOfStudents(tableNum: number | undefined){
-      const response = await axios.get(`http://44.203.31.97:3001/data/api/g/totalStudents/${tableNum}`)
-      const numOStu:number =  await response.data[0].num_occupied_seats
-      console.warn(numOStu)
-      setStudentsAtTable(numOStu)
-    }
-    getNumOfStudents(tableNum);
-
-  }, []) */
 
   return(
+    <View>
+     {hasTable ? 
     <View style={styles.container}>
-      <ImageBackground source={require('./Background.png')} style={[styles.imageBackground]}>
-        <View>
-          {hasTable ? 
-          <View style={styles.container}>
-            
-            <Text>Table Number: {tableNum}</Text>
-            <TouchableOpacity onPress={reserveTable}>
-                    <Text  adjustsFontSizeToFit={true}>Secure Table</Text>
-            </TouchableOpacity>
-              <Text style = {{color: 'black'}}>My table</Text>
-
-              <TouchableOpacity onPress={toggleBroadCastModal}>
-                <Text style = {{color: 'black'}}>Broad Cast Course</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity onPress={openToEveryOne}>
-                <Text style = {{color: 'black'}}>Open Table to Everyone</Text>
-              </TouchableOpacity>
-
-              <Modal isVisible={showBroadCastModal} backdropColor='white'>
-                <Text>Select the class you want to share to </Text>
-                <SelectList
-                      setSelected ={(val:string | null) => setValue(val)}
-                      data = {dropDownCourseArray}
-                      onSelect={addCourseToTable}
-                      save = "value"
-                />
-                <Button title="Close Modal" onPress={() => setShowBroadCastModal(false)} />
-              </Modal>
-
-              {/*
-              <Canvas style={{width: 500, height: 500}}>
-                  <Box box={rect(115,350,150,150)}></Box>
-            </Canvas> */}
-            
-          
-            <TouchableOpacity  onPress={leaveTable}>
-                    <Text  adjustsFontSizeToFit={true}>Leave Table</Text>
-            </TouchableOpacity>
-            <View>
-              <Text>Status: {status}</Text>
-              <Text>Courses:</Text>
-              {renderedData.map((item,index) =>(
-                <Text key ={index}>{item}</Text> //this puts the courses at a table
-              ))
-              }
-              {!showAll && (
-                <TouchableOpacity onPress ={() => setShowAll(true)}>
-                  <Text>See All...</Text>
-                </TouchableOpacity>
-              )}
-              <Text>Study Buddies: {studentsAtTable}</Text>
-            </View>
-            <Text>Seats Occupied: {studentsAtTable}</Text>
-            <Text>Seats Available: {}</Text>
       
-          </View> : 
-          <View>
-            <Text style={styles.noTable}>You have not reserved a table yet</Text>
-            <TouchableOpacity onPress={reserveTable}>
-                    <Text style={styles.scanTag}  adjustsFontSizeToFit={true}>Secure table</Text>
-            </TouchableOpacity>
-          </View>}
-        </View>
-      </ImageBackground>
-    </View>
+      <Text>Table Number: {tableNum}</Text>
+      <TouchableOpacity onPress={reserveTable}>
+              <Text  adjustsFontSizeToFit={true}>Secure Table</Text>
+      </TouchableOpacity>
+        <Text style = {{color: 'black'}}>My table</Text>
+
+        <TouchableOpacity onPress={toggleBroadCastModal}>
+          <Text style = {{color: 'black'}}>Broad Cast Course</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={openToEveryOne}>
+          <Text style = {{color: 'black'}}>Open Table to Everyone</Text>
+        </TouchableOpacity>
+
+        <Modal isVisible={showBroadCastModal} backdropColor='white'>
+          <Text>Select the class you want to share to </Text>
+          <SelectList
+                 setSelected ={(val:string | null) => setValue(val)}
+                 data = {dropDownCourseArray}
+                 onSelect={addCourseToTable}
+                 save = "value"
+           />
+          <Button title="Close Modal" onPress={() => setShowBroadCastModal(false)} />
+        </Modal>
+
+      <TouchableOpacity  onPress={leaveTable}>
+              <Text  adjustsFontSizeToFit={true}>Leave Table</Text>
+      </TouchableOpacity>
+      <View>
+        <Text>Status: {status}</Text>
+        <Text>Courses:</Text>
+        {renderedData.map((item,index) =>(
+          <Text key ={index}>{item}</Text> //this puts the courses at a table
+        ))
+        }
+        {!showAll && (
+          <TouchableOpacity onPress ={() => setShowAll(true)}>
+            <Text>See All...</Text>
+          </TouchableOpacity>
+        )}
+        <Text>Study Buddies: {studentsAtTable}</Text>
+      </View>
+      <Text>Seats Occupied: {studentsAtTable}</Text>
+      <Text>Seats Available: {seatsFree}</Text>
+ 
+    </View> : 
+
+    //this is what get's rendered if the user has no table reserved 
+    <View>
+      <Text style={styles.noTable}>You have not reserved a table yet</Text>
+      <TouchableOpacity onPress={reserveTable}>
+              <Text style={styles.scanTag}  adjustsFontSizeToFit={true}>Secure table</Text>
+      </TouchableOpacity>
+    </View>}
+  </View>
   );
  }
 
 const styles = StyleSheet.create({
-  container:{
-    flex: 1, // sets the entire screen size to 1
+  container: {
+    // App background color
     backgroundColor: '#ecf0e4',
-  },
-  imageBackground:{
-    flex: 1,
-    resizeMode: 'cover',
+
   },
   scanTag:{
     textAlign: 'center'
