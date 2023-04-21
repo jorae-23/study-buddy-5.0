@@ -1,8 +1,9 @@
 import React, {useState, useCallback, useEffect}from 'react';
 import {View, Text as RNText, TouchableOpacity, StyleSheet, Image, ImageBackground} from 'react-native';
 import NfcManager, {NfcTech} from 'react-native-nfc-manager';
+import { Alert } from 'react-native';
 import axios from 'axios';
-import { Canvas, rect, Rect,Box, SkiaView,Text as SkiaText, useFont, SkFont} from '@shopify/react-native-skia';
+import { Canvas, rect, Rect, Box, SkiaView, Text as SkiaText, useFont, SkFont} from '@shopify/react-native-skia';
 import { SelectList } from 'react-native-dropdown-select-list';
 
 NfcManager.start();
@@ -63,7 +64,6 @@ export default function SearchCourse(){
     const [courseArray,setCourseArray] = useState<courses>([])
     const [dropDownCourseArray, setDropDownCourseArray] = useState<coursesN>([])
     const [tableArray, setTableArray] = useState<number[]>([])
-    
 
     let studytables: studytable = []
     
@@ -96,7 +96,7 @@ export default function SearchCourse(){
 
     
     async function studyTablesInfo() {
-        setMyTableFilterArray([])
+      setMyTableFilterArray([])
         setTableArray([])
         let response2 = await axios.get(
           `http://44.203.31.97:3001/data/api/curate/specific/studytables`
@@ -117,7 +117,7 @@ export default function SearchCourse(){
         });
         uniqueCourses.sort()
         setTableArray(uniqueCourses)
-      } 
+    } 
       
     const renderLabel = () =>{ 
             return(
@@ -126,33 +126,52 @@ export default function SearchCourse(){
                 </RNText>
             )
     }
+
     return(
         <View style={styles.container}>
           <ImageBackground source={require('./Background.png')} style={[styles.imageBackground]}>
             <View style={styles.introTextContainer}>
                 <View style={styles.introBox}>
-                  <RNText style={styles.introText}>Select a course you would like to study:</RNText> 
+                  <RNText style={styles.introText} adjustsFontSizeToFit={true}>Select a course you would like to study:</RNText> 
                 </View>
             </View>
-            {renderLabel()}
-          
-               <SelectList
-                 setSelected ={(val:string) => setValue(val)}
-                 onSelect={studyTablesInfo}
-                 data = {dropDownCourseArray}
-                 save = "value"
-                 />
-            {/*<Canvas style={{width: 400, height: 400}}>
-                {tableArray}
-             </Canvas>*/}
-             <View>
-                <RNText>
-                  {tableArray}
-                </RNText>
-             </View>
-           </ImageBackground>
-        </View>
-        
+
+            <View style={styles.dropdownContainer}>
+              <SelectList
+                  setSelected ={(val:string) => setValue(val)}
+                  onSelect={studyTablesInfo}
+                  data = {dropDownCourseArray}
+                  save = "value"
+                  searchPlaceholder='Search'
+                  boxStyles={styles.boxStyle}
+                  inputStyles={styles.inputStyle}
+                  dropdownStyles={styles.dropdownStyle}
+                  dropdownTextStyles={styles.dropDownTextStyle}
+              />
+            </View>
+
+            <View style={styles.imageContainer}>
+              <Image source={require('./Courses.png')} style={[styles.image]}></Image>
+            </View>
+            <View style={styles.courseContainer}>
+              <View style={styles.titleBox}>
+                <RNText style={styles.titleText} adjustsFontSizeToFit={true}>Course Description</RNText>
+              </View>
+              <View style={styles.courseBox}>
+                  <RNText style={styles.courseText} adjustsFontSizeToFit={true}> Course Name </RNText>
+                  <RNText></RNText>
+                  <RNText style={styles.courseText} adjustsFontSizeToFit={true}> Locations </RNText>
+                  <RNText style={styles.courseText} adjustsFontSizeToFit={true}>      Floor Level </RNText>
+                  <RNText style={styles.courseText} adjustsFontSizeToFit={true}>      Table Number </RNText>
+                  <RNText style={styles.courseText} adjustsFontSizeToFit={true}>      Open Seats </RNText>
+                  <RNText></RNText>
+                  <RNText style={styles.courseText} adjustsFontSizeToFit={true}>      Floor Level </RNText>
+                  <RNText style={styles.courseText} adjustsFontSizeToFit={true}>      Table Number </RNText>
+                  <RNText style={styles.courseText} adjustsFontSizeToFit={true}>      Open Seats </RNText>
+              </View>
+            </View>
+          </ImageBackground>  
+        </View>   
     )
 }
 const styles = StyleSheet.create({
@@ -168,7 +187,6 @@ const styles = StyleSheet.create({
   introTextContainer: {
     flex: 1,
     justifyContent: 'center',
-    marginTop: '3%',
     //backgroundColor: 'white'
   },
   introBox: {
@@ -176,6 +194,7 @@ const styles = StyleSheet.create({
     padding: '1%',
     height: '80%',
     width: '90%',
+    marginTop: '3%',
     borderRadius: 10,
     backgroundColor: '#86cba6',
     alignItems: 'center',
@@ -186,14 +205,12 @@ const styles = StyleSheet.create({
     fontSize: 20
   },
   dropdownContainer: {
-    //justifyContent: 'center',
-    margin: '2%',
-    
+    //backgroundColor: 'red'
   },
   boxStyle: {
     borderRadius: 10,
     backgroundColor: '#fbe29c',
-    //padding: '3%',
+    margin: '2%',
     width: '80%',
     alignSelf: 'center',
     borderWidth: 0
@@ -219,7 +236,8 @@ const styles = StyleSheet.create({
   },
   image: {
     resizeMode: 'contain',
-    width: '35%'
+    width: '100%',
+    height: '100%',
   },
   courseContainer: {
     flex: 7,

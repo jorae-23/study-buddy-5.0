@@ -313,77 +313,84 @@ export default function MyTable() {
   }, []) */
 
   return(
-    <View>
-     {hasTable ? 
     <View style={styles.container}>
+      <ImageBackground source={require('./Background.png')} style={[styles.imageBackground]}>
+        <View>
+          {hasTable ? 
+          <View style={styles.container}>
+            
+            <Text>Table Number: {tableNum}</Text>
+            <TouchableOpacity onPress={reserveTable}>
+                    <Text  adjustsFontSizeToFit={true}>Secure Table</Text>
+            </TouchableOpacity>
+              <Text style = {{color: 'black'}}>My table</Text>
+
+              <TouchableOpacity onPress={toggleBroadCastModal}>
+                <Text style = {{color: 'black'}}>Broad Cast Course</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={openToEveryOne}>
+                <Text style = {{color: 'black'}}>Open Table to Everyone</Text>
+              </TouchableOpacity>
+
+              <Modal isVisible={showBroadCastModal} backdropColor='white'>
+                <Text>Select the class you want to share to </Text>
+                <SelectList
+                      setSelected ={(val:string | null) => setValue(val)}
+                      data = {dropDownCourseArray}
+                      onSelect={addCourseToTable}
+                      save = "value"
+                />
+                <Button title="Close Modal" onPress={() => setShowBroadCastModal(false)} />
+              </Modal>
+
+              {/*
+              <Canvas style={{width: 500, height: 500}}>
+                  <Box box={rect(115,350,150,150)}></Box>
+            </Canvas> */}
+            
+          
+            <TouchableOpacity  onPress={leaveTable}>
+                    <Text  adjustsFontSizeToFit={true}>Leave Table</Text>
+            </TouchableOpacity>
+            <View>
+              <Text>Status: {status}</Text>
+              <Text>Courses:</Text>
+              {renderedData.map((item,index) =>(
+                <Text key ={index}>{item}</Text> //this puts the courses at a table
+              ))
+              }
+              {!showAll && (
+                <TouchableOpacity onPress ={() => setShowAll(true)}>
+                  <Text>See All...</Text>
+                </TouchableOpacity>
+              )}
+              <Text>Study Buddies: {studentsAtTable}</Text>
+            </View>
+            <Text>Seats Occupied: {studentsAtTable}</Text>
+            <Text>Seats Available: {}</Text>
       
-      <Text>Table Number: {tableNum}</Text>
-      <TouchableOpacity onPress={reserveTable}>
-              <Text  adjustsFontSizeToFit={true}>Secure Table</Text>
-      </TouchableOpacity>
-        <Text style = {{color: 'black'}}>My table</Text>
-
-        <TouchableOpacity onPress={toggleBroadCastModal}>
-          <Text style = {{color: 'black'}}>Broad Cast Course</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={openToEveryOne}>
-          <Text style = {{color: 'black'}}>Open Table to Everyone</Text>
-        </TouchableOpacity>
-
-        <Modal isVisible={showBroadCastModal} backdropColor='white'>
-          <Text>Select the class you want to share to </Text>
-          <SelectList
-                 setSelected ={(val:string | null) => setValue(val)}
-                 data = {dropDownCourseArray}
-                 onSelect={addCourseToTable}
-                 save = "value"
-           />
-          <Button title="Close Modal" onPress={() => setShowBroadCastModal(false)} />
-        </Modal>
-
-        {/*
-        <Canvas style={{width: 500, height: 500}}>
-            <Box box={rect(115,350,150,150)}></Box>
-       </Canvas> */}
-      
-    
-      <TouchableOpacity  onPress={leaveTable}>
-              <Text  adjustsFontSizeToFit={true}>Leave Table</Text>
-      </TouchableOpacity>
-      <View>
-        <Text>Status: {status}</Text>
-        <Text>Courses:</Text>
-        {renderedData.map((item,index) =>(
-          <Text key ={index}>{item}</Text> //this puts the courses at a table
-        ))
-        }
-        {!showAll && (
-          <TouchableOpacity onPress ={() => setShowAll(true)}>
-            <Text>See All...</Text>
-          </TouchableOpacity>
-        )}
-        <Text>Study Buddies: {studentsAtTable}</Text>
-      </View>
-      <Text>Seats Occupied: {studentsAtTable}</Text>
-      <Text>Seats Available: {}</Text>
- 
-    </View> : 
-    <View>
-      <Text style={styles.noTable}>You have not reserved a table yet</Text>
-      <TouchableOpacity onPress={reserveTable}>
-              <Text style={styles.scanTag}  adjustsFontSizeToFit={true}>Secure table</Text>
-      </TouchableOpacity>
-    </View>}
-  </View>
+          </View> : 
+          <View>
+            <Text style={styles.noTable}>You have not reserved a table yet</Text>
+            <TouchableOpacity onPress={reserveTable}>
+                    <Text style={styles.scanTag}  adjustsFontSizeToFit={true}>Secure table</Text>
+            </TouchableOpacity>
+          </View>}
+        </View>
+      </ImageBackground>
+    </View>
   );
  }
 
 const styles = StyleSheet.create({
-  container: {
-    // App background color
+  container:{
+    flex: 1, // sets the entire screen size to 1
     backgroundColor: '#ecf0e4',
-
+  },
+  imageBackground:{
+    flex: 1,
+    resizeMode: 'cover',
   },
   scanTag:{
     textAlign: 'center'
