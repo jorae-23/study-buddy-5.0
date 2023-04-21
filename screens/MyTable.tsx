@@ -412,13 +412,13 @@ export default function MyTable() {
  }
 
 const styles = StyleSheet.create({
-  container: {
-    // App background color
+ container:{
+    flex: 1, // sets the entire screen size to 1
     backgroundColor: '#ecf0e4',
   },
-  imageBackground: {
-    flex: 1, 
-    resizeMode: 'cover'
+  imageBackground:{
+    flex: 1,
+    resizeMode: 'cover',
   },
   imageTableContainer: {
     flex: 1.5,
@@ -546,7 +546,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row', // sets the child elements to be horizontal
     alignItems: 'flex-start',
     justifyContent: 'center',
-    //backgroundColor: "pink"
+    //backgroundColor: "pink" this is test
   },
   boxNoTable:{
     flex: 1, 
