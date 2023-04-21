@@ -415,7 +415,10 @@ const styles = StyleSheet.create({
   container: {
     // App background color
     backgroundColor: '#ecf0e4',
-
+  },
+  imageBackground: {
+    flex: 1, 
+    resizeMode: 'cover'
   },
   imageTableContainer: {
     flex: 1.5,
