@@ -2,7 +2,6 @@ import React, {useState, useEffect, SetStateAction} from 'react';
 import axios from 'axios';
 import DeviceInfo from 'react-native-device-info';
 import {View, Text, TouchableOpacity, StyleSheet, Image, ImageBackground} from 'react-native';
-import reserveTable from './WelcomePage'
 import NfcManager, {NfcTech} from 'react-native-nfc-manager';
 import { Alert , Button} from 'react-native';
 import { Canvas, rect, Rect,Box, SkiaView, useFont, SkFont} from '@shopify/react-native-skia';
@@ -81,13 +80,11 @@ export default function MyTable() {
           const tagNum =  await getTagNumber(tagID)
           const tableNums = await getTableNum(tagNum)
           setTableNum(tableNums)
-          await handleStatus()
+          handleStatus()
           await updateTableStatus(tableNum)
           await updateSeatStatus(tagNum)
           await putUniqueDeviceId(tagNum)
           
-         
-
           await getNumOfStudents(tableNum)
 
           setHasTable(true)
@@ -123,6 +120,7 @@ export default function MyTable() {
    async function handleStatus(){
     const respone =  await axios.get(`http://44.203.31.97:3001/data/api/tables/status/${tableNum}`)
     const tableStatus: boolean =  await respone.data[0].TableStatusFree
+    console.warn(tableStatus)
   
     if(tableStatus){
       setStatus('closed')
@@ -258,7 +256,7 @@ export default function MyTable() {
         try{
         await axios.put(`http://44.203.31.97:3001/data/api/update/Courses/${coursesIamStudying[i]}/${tableNum}`)
         }catch(error){
-          console.warn('error occred while deleting deviceId and course', error)
+          console.warn('error occred while deleting course', error)
         }
         for(let j = 0; j< coursesAtTable.length;j++){
           if(coursesIamStudying[i] === coursesAtTable[j]){
@@ -294,23 +292,10 @@ export default function MyTable() {
         }
         i++
       }
-      setHasTable(false)
       setCoursesIamStudying([])
-      
-
+      setHasTable(false)
       Alert.alert(`you have left table ${tableNum}`)
     }
-  /*
-  useEffect(() =>{
-    async function getNumOfStudents(tableNum: number | undefined){
-      const response = await axios.get(`http://44.203.31.97:3001/data/api/g/totalStudents/${tableNum}`)
-      const numOStu:number =  await response.data[0].num_occupied_seats
-      console.warn(numOStu)
-      setStudentsAtTable(numOStu)
-    }
-    getNumOfStudents(tableNum);
-
-  }, []) */
 
   return(
     <View>
@@ -342,12 +327,6 @@ export default function MyTable() {
           <Button title="Close Modal" onPress={() => setShowBroadCastModal(false)} />
         </Modal>
 
-        {/*
-        <Canvas style={{width: 500, height: 500}}>
-            <Box box={rect(115,350,150,150)}></Box>
-       </Canvas> */}
-      
-    
       <TouchableOpacity  onPress={leaveTable}>
               <Text  adjustsFontSizeToFit={true}>Leave Table</Text>
       </TouchableOpacity>
@@ -369,6 +348,8 @@ export default function MyTable() {
       <Text>Seats Available: {}</Text>
  
     </View> : 
+
+    //this is what get's rendered if the user has no table reserved 
     <View>
       <Text style={styles.noTable}>You have not reserved a table yet</Text>
       <TouchableOpacity onPress={reserveTable}>
