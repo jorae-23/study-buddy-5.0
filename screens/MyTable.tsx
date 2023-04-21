@@ -1,7 +1,7 @@
 import React, {useState, useEffect, SetStateAction} from 'react';
 import axios from 'axios';
 import DeviceInfo from 'react-native-device-info';
-import {View, Text, TouchableOpacity, StyleSheet, Image, ImageBackground} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, Image, ImageBackground, TurboModuleRegistry} from 'react-native';
 import reserveTable from './WelcomePage'
 import NfcManager, {NfcTech} from 'react-native-nfc-manager';
 import { Alert , Button} from 'react-native';
@@ -191,7 +191,7 @@ export default function MyTable() {
           await getNumOfStudents(studyTables[i].TableNum)
           break;
         }
-        setHasTable(false)
+        setHasTable(true) //setHasTable to true or false to see the page items
       }
     }
     checkIfUserReservedTable()
@@ -381,7 +381,7 @@ export default function MyTable() {
       </ImageBackground>
     </View>
   );
- }
+ };
 
 const styles = StyleSheet.create({
   container:{
