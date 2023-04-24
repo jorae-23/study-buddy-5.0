@@ -66,40 +66,7 @@ export default function MyTable() {
           })
     }
     
-        async function reserveTable() {
-        try {
-          Alert.alert('Scan button pressed', 'looking for tag to scan')
-          
-          // register for the NFC tag with NDEF in it
-          await NfcManager.requestTechnology(NfcTech.Ndef);
-    
-          // the resolved tag object will contain `ndefMessage` property
-          const tag = await NfcManager.getTag();
-    
-          const tagID = tag?.id
-          const tagNum =  await getTagNumber(tagID)
-          const tableNums = await getTableNum(tagNum)
-          setTableNum(tableNums)
-          handleStatus()
-          await updateTableStatus(tableNum)
-          await updateSeatStatus(tagNum)
-          await putUniqueDeviceId(tagNum)
-          
-          await getNumOfStudents(tableNum)
-
-          setHasTable(true)
-  
-          Alert.alert(`You have reserved table ${tableNum} from scanning tag ${tagNum}`)
-    
-         // handleTableStatus()
-    
-        } catch (ex) {
-          console.warn('Oops!', ex);
-        } finally {
-          // stop the nfc scanning
-          NfcManager.cancelTechnologyRequest();
-        }
-      }
+       
 
   //all the info for your to style is right here 
   const [coursesAtTable, setCoursesAtTable] = useState<string[]>([]);
@@ -117,18 +84,42 @@ export default function MyTable() {
   const [coursesIamStudying, setCoursesIamStudying] = useState<string[]>([])
   const [seatsFree, setSeatsFree] = useState(0)
 
-   async function handleStatus(){
-    const respone =  await axios.get(`http://44.203.31.97:3001/data/api/tables/status/${tableNum}`)
-    const tableStatus: boolean =  await respone.data[0].TableStatusFree
-    console.warn(tableStatus)
-  
-    if(tableStatus){
-      setStatus('Closed to public.')
+  async function reserveTable() {
+    try {
+      Alert.alert('Scan button pressed', 'looking for tag to scan')
+      
+      // register for the NFC tag with NDEF in it
+      await NfcManager.requestTechnology(NfcTech.Ndef);
+
+      // the resolved tag object will contain `ndefMessage` property
+      const tag = await NfcManager.getTag();
+
+      const tagID = tag?.id
+      const tagNum =  await getTagNumber(tagID)
+      const tableNum = await getTableNum(tagNum)
+
+
+      //await handleStatus()
+      await updateTableStatus(tableNum)
+      await updateSeatStatus(tagNum)
+      await putUniqueDeviceId(tagNum)
+      
+      await getNumOfStudents(tableNum)
+
+      setHasTable(true)
+      setTableNum(tableNum)
+
+      Alert.alert(`You have reserved table ${tableNum} from scanning tag ${tagNum}`)
+
+     // handleTableStatus()
+
+    } catch (ex) {
+      console.warn('Oops!', ex);
+    } finally {
+      // stop the nfc scanning
+      NfcManager.cancelTechnologyRequest();
     }
-    if(coursesAtTable.length> 0){
-      setStatus('Open for studying a course.')
-    }
-  }
+  }   
 
   function openToEveryOne(){
     setStatus('Open for anyone to join.')
@@ -185,6 +176,7 @@ export default function MyTable() {
           setDeviceid(studyTables[i].deviceid);
           setTableNum(studyTables[i].TableNum);
           setTagNum(studyTables[i].TagNum);
+          await setEmptyCourses()
           setHasTable(true)
           await getNumOfStudents(studyTables[i].TableNum)
           break;
@@ -223,6 +215,12 @@ export default function MyTable() {
     fillDropCourseArray()
   }, [courseArray]);
 
+
+  async function setEmptyCourses(){
+    const response = await axios.get(`http://44.203.31.97:3001/data/api/table/emptySeats/${tableNum}`)
+    const emptySeats:number = await response.data[0].count
+    setSeatsFree(emptySeats)
+  }
   useEffect(() =>{
     async function setEmptyCourses(){
       const response = await axios.get(`http://44.203.31.97:3001/data/api/table/emptySeats/${tableNum}`)
@@ -230,6 +228,25 @@ export default function MyTable() {
       setSeatsFree(emptySeats)
     }
     setEmptyCourses()
+  }, [])
+
+  useEffect(() =>{
+    async function handleStatus(){
+      if(hasTable){
+      const respone =  await axios.get(`http://44.203.31.97:3001/data/api/tables/status/${tableNum}`)
+
+      const tableStatus: boolean =  await respone.data[0].TableStatusFree
+      console.warn(tableStatus)
+    
+      if(tableStatus){
+        setStatus('Closed to public.')
+      }
+      if(coursesAtTable.length> 0){
+        setStatus('Open for studying a course.')
+      }
+     }
+    }
+    handleStatus()
   }, [])
 
  
@@ -243,7 +260,6 @@ export default function MyTable() {
       }
     }
 
-
     async function leaveTable(){
      //logic for removing deviceid from table
       try{
@@ -251,6 +267,7 @@ export default function MyTable() {
       } catch(error){
         console.warn('Error occured after removing device id', error)
       }
+      setDeviceid('')
 
       //logic for labeling seat as open
       try{
@@ -289,7 +306,7 @@ export default function MyTable() {
         if(tableNum ===  studyTables[i].TableNum  && studyTables[i].SeatStatusFree === true){
             seatsEmpty++
             if(seatsEmpty == numOfSeats){
-              handleStatus()
+              //handleStatus()
               try{
               await axios.put(`http://44.203.31.97:3001/data/api/Tables/open/${tableNum}`)
               setCoursesAtTable([])
