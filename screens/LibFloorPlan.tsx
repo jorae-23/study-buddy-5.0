@@ -97,8 +97,8 @@ export default function LibFloorPlan(){
                   {boxArray}
                 </Canvas>
             </View>
-            <TouchableOpacity onPress={refresh} style={styles.refresh}>
-                <Text>
+            <TouchableOpacity onPress={refresh} style={styles.containerRefresh}>
+                <Text style={styles.refreshText}>
                     Refresh
                 </Text>
             </TouchableOpacity>
@@ -132,11 +132,6 @@ const styles = StyleSheet.create({
     left: screenWidth/2 - 166.5,
    
    },
-   refresh:{
-    justifyContent: 'flex-start',
-    position: 'relative'
-   },
-
    tables:{
     ... StyleSheet.absoluteFillObject,
     justifyContent: 'center',
@@ -146,6 +141,20 @@ const styles = StyleSheet.create({
 
    table1:{
     color: 'red',
-   }
+   },
+   containerRefresh: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  refreshText: {
+    position: 'absolute',
+    top: 0,
+    textAlign: 'center',
+    width: '100%',
+    paddingVertical: 10,
+    fontWeight: 'bold',
+    fontSize: 18,
+  },
 
 });
