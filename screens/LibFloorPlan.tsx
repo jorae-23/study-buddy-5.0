@@ -1,5 +1,5 @@
 //import React, {useState}from 'react';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, SafeAreaView, ImageBackground, Image, Dimensions} from 'react-native';
 import NfcManager, {NfcTech} from 'react-native-nfc-manager';
 import { Alert } from 'react-native';
@@ -23,29 +23,63 @@ const screenHieght = height;
 
 
 
+
+
 /* Here i'm thinking a getTableStatus function that takes in a table number, checks the database, if open then return the string "green", else return "red" */
- 
-const getTableStatus = (tableNumber: number | undefined) => {
-    
-    const status = 'occu' ;//(check database);
-    const open = 'open';
 
-   
-    if (open.localeCompare(status) == 0){
-        const color = 'green';
-        return color;
-    }
-    const color = 'red';
-    return color;
-
-};
-
-
-const table2color = "green";
-const table3color = "yellow";
 
 export default function LibFloorPlan(){
-   
+    const [boxColors, setBoxColors] = useState(Array(7).fill(''));
+    const boxArray = [
+        <Box key={1} color={boxColors[0]} box={rrect(rect(screenWidth/2 +90, screenHieght/2 +135, 20, 20), 5, 5)}></Box>,
+        <Box key={2} color={boxColors[1]} box={rrect(rect(screenWidth/2 +90, screenHieght/2 +105, 20, 20), 5, 5)}></Box>,
+        <Box key={3} color={boxColors[2]} box={rrect(rect(screenWidth/2 +60, screenHieght/2 +135, 20, 20), 5, 5)}></Box>,
+        <Box key={4} color={boxColors[3]} box={rrect(rect(screenWidth/2 +60, screenHieght/2 +105, 20, 20), 5, 5)}></Box>,
+        <Box key={5} color={boxColors[4]} box={rrect(rect(screenWidth/2 +50, screenHieght/2 +62, 20, 20), 5, 5)}></Box>,
+        <Box key={6} color={boxColors[5]} box={rrect(rect(screenWidth/2 +96, screenHieght/2 +79, 10, 10), 2, 2)}></Box>,
+        <Box key={7} color = {boxColors[6]} box= {rrect(rect(screenWidth/2 +96, screenHieght/2 +70, 10, 10), 2, 2)}></Box>
+        
+]
+    useEffect(() =>{
+        async function setTableStatus(){
+            for(let i = 0; i< boxArray.length;i++){
+                let response = await axios.get(`http://44.203.31.97:3001/data/api/tables/status/${boxArray[i].key}`)
+                let response2 = await axios.get(`http://44.203.31.97:3001/data/api/courses/atTable/${boxArray[i].key}`)
+                let courses = await response2.data[0].Courses
+                const tableStatusFree: boolean =  await response.data[0].TableStatusFree
+                if(tableStatusFree){ //table is open
+                    setBoxColors(prevState => [...prevState.slice(0, i), 'green', ...prevState.slice(i+1)]);
+                } else if(!tableStatusFree && courses.length > 0){ //courses are being studied
+                    setBoxColors(prevState => [...prevState.slice(0, i), 'yellow', ...prevState.slice(i+1)]);
+                }
+                else if(!tableStatusFree && courses.length === 0){
+                    setBoxColors(prevState => [...prevState.slice(0, i), 'red', ...prevState.slice(i+1)]);
+                }
+            }
+        }
+        setTableStatus()
+    }, [])
+
+    function refresh(){
+        setTableStatus()
+    }
+
+    async function setTableStatus(){
+        for(let i = 0; i< boxArray.length;i++){
+            let response = await axios.get(`http://44.203.31.97:3001/data/api/tables/status/${boxArray[i].key}`)
+            let response2 = await axios.get(`http://44.203.31.97:3001/data/api/courses/atTable/${boxArray[i].key}`)
+            let courses = await response2.data[0].Courses
+            const tableStatusFree: boolean =  await response.data[0].TableStatusFree
+            if(tableStatusFree){ //table is open
+                setBoxColors(prevState => [...prevState.slice(0, i), 'green', ...prevState.slice(i+1)]);
+            } else if(!tableStatusFree && courses.length > 0){ //courses are being studied
+                setBoxColors(prevState => [...prevState.slice(0, i), 'yellow', ...prevState.slice(i+1)]);
+            }
+            else if(!tableStatusFree && courses.length === 0){
+                setBoxColors(prevState => [...prevState.slice(0, i), 'red', ...prevState.slice(i+1)]);
+            }
+        }
+    }
     return(
         
         <SafeAreaView style = {styles.SafeAreaViewContainer}>
@@ -58,18 +92,16 @@ export default function LibFloorPlan(){
                 
                 
                 <Canvas style={styles.tables}>
-                    {/* large tables */}
+
                     
-                    <Box color = {getTableStatus(1)} box= {rrect(rect(screenWidth/2 +90, screenHieght/2 +135, 20, 20), 5, 5)}></Box>
-                    <Box color = {getTableStatus(2)} box= {rrect(rect(screenWidth/2 +90, screenHieght/2 +105, 20, 20), 5, 5)}></Box>
-                    <Box color={getTableStatus(3)} box= {rrect(rect(screenWidth/2 +60, screenHieght/2 +135, 20, 20), 5, 5)}></Box>
-                    <Box color = "green" box= {rrect(rect(screenWidth/2 +60, screenHieght/2 +105, 20, 20), 5, 5)}></Box>
-                    <Box color = "green" box= {rrect(rect(screenWidth/2 +50, screenHieght/2 +62, 20, 20), 5, 5)}></Box>
-                    {/* single seats */}
-                    <Box color = "red" box= {rrect(rect(screenWidth/2 +96, screenHieght/2 +79, 10, 10), 2, 2)}></Box>
-                    <Box color = "green" box= {rrect(rect(screenWidth/2 +96, screenHieght/2 +70, 10, 10), 2, 2)}></Box>
+                  {boxArray}
                 </Canvas>
             </View>
+            <TouchableOpacity onPress={refresh} style={styles.refresh}>
+                <Text>
+                    Refresh
+                </Text>
+            </TouchableOpacity>
         </SafeAreaView>
     )
 }
@@ -99,6 +131,10 @@ const styles = StyleSheet.create({
     top: screenHieght/2 -250,
     left: screenWidth/2 - 166.5,
    
+   },
+   refresh:{
+    justifyContent: 'flex-start',
+    position: 'relative'
    },
 
    tables:{
