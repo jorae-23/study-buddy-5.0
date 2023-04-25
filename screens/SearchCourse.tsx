@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center'
   },
   titleText: {
-    fontSize: 20,
+    fontSize: 16.5,
     color: 'white',
   },
   courseBox: {
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
   },
   courseText: {
     fontSize: 15,
-
+    fontWeight: 'bold',
     color: 'black',
   },
   locationText: {

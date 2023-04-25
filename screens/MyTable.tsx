@@ -243,7 +243,7 @@ export default function MyTable() {
         setStatus('Closed to public.')
       }
       if(coursesAtTable.length> 0){
-        setStatus('Open for studying a course.')
+        setStatus('Open for course studying.')
       }
      }
     }
@@ -257,7 +257,7 @@ export default function MyTable() {
         Alert.alert('Alert for adding a course', `The public will know that ${value} is being studied at table ${tableNum}.`)
         setCoursesAtTable([...coursesAtTable, value])
         setCoursesIamStudying([...coursesIamStudying, value])
-        setStatus('Open for studying a course.')
+        setStatus('Open for course studying.')
       }
     }
 
@@ -531,7 +531,8 @@ const styles = StyleSheet.create({
   },
   listTitleText: {
     fontSize: 18,
-    color: 'black'
+    color: 'black',
+    fontWeight: 'bold'
   },
   listText: {
     fontSize: 18,
