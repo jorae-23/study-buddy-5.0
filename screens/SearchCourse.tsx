@@ -1,5 +1,5 @@
 import React, {useState, useCallback, useEffect}from 'react';
-import {View, Text as RNText, TouchableOpacity, StyleSheet, Image, ImageBackground} from 'react-native';
+import {View, Text as RNText, TouchableOpacity, StyleSheet, Image, ImageBackground, ScrollView} from 'react-native';
 import NfcManager, {NfcTech} from 'react-native-nfc-manager';
 import { Alert } from 'react-native';
 import axios from 'axios';
@@ -170,14 +170,15 @@ export default function SearchCourse(){
                   <RNText style={styles.courseText} adjustsFontSizeToFit={true}>{value}</RNText>
                   <RNText></RNText>
                   <RNText style={styles.courseText} adjustsFontSizeToFit={true}> Locations </RNText>
-                 
-                  {tableArray.map((table) => (
-                  <View key={`${table.floorLevel}-${table.tableNum}`}>
-                    <RNText style={styles.locationText} adjustsFontSizeToFit={true}>    Floor Level: {table.floorLevel}</RNText>
-                    <RNText style={styles.locationText} adjustsFontSizeToFit={true}>    Table Number: {table.tableNum}</RNText>
-                    <RNText style={styles.locationText} adjustsFontSizeToFit={true}>    Open Seats: {table.openSeats}</RNText>
-                    <RNText style={styles.locationText} adjustsFontSizeToFit={true}></RNText>
-                  </View>))} 
+                  <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+                    {tableArray.map((table) => (
+                    <View key={`${table.floorLevel}-${table.tableNum}`}>
+                      <RNText style={styles.locationText} adjustsFontSizeToFit={true}>    Floor Level: {table.floorLevel}</RNText>
+                      <RNText style={styles.locationText} adjustsFontSizeToFit={true}>    Table Number: {table.tableNum}</RNText>
+                      <RNText style={styles.locationText} adjustsFontSizeToFit={true}>    Open Seats: {table.openSeats}</RNText>
+                      <RNText style={styles.locationText} adjustsFontSizeToFit={true}></RNText>
+                    </View>))} 
+                  </ScrollView>
               </View>
             </View>
           </ImageBackground>  

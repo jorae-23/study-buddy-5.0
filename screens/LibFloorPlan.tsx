@@ -21,12 +21,7 @@ const {width, height} = Dimensions.get('window');
 const screenWidth = width;
 const screenHieght = height;
 
-
-
-
-
 /* Here i'm thinking a getTableStatus function that takes in a table number, checks the database, if open then return the string "green", else return "red" */
-
 
 export default function LibFloorPlan(){
     const [boxColors, setBoxColors] = useState(Array(7).fill(''));
@@ -37,8 +32,7 @@ export default function LibFloorPlan(){
         <Box key={4} color={boxColors[3]} box={rrect(rect(screenWidth/2 +60, screenHieght/2 +105, 20, 20), 5, 5)}></Box>,
         <Box key={5} color={boxColors[4]} box={rrect(rect(screenWidth/2 +50, screenHieght/2 +62, 20, 20), 5, 5)}></Box>,
         <Box key={6} color={boxColors[5]} box={rrect(rect(screenWidth/2 +96, screenHieght/2 +79, 10, 10), 2, 2)}></Box>,
-        <Box key={7} color = {boxColors[6]} box= {rrect(rect(screenWidth/2 +96, screenHieght/2 +70, 10, 10), 2, 2)}></Box>
-        
+        <Box key={7} color = {boxColors[6]} box= {rrect(rect(screenWidth/2 +96, screenHieght/2 +70, 10, 10), 2, 2)}></Box>       
 ]
     useEffect(() =>{
         async function setTableStatus(){
@@ -81,19 +75,13 @@ export default function LibFloorPlan(){
         }
     }
     return(
-        
         <SafeAreaView style = {styles.SafeAreaViewContainer}>
-
             <Image 
                 style= {styles.floor}
                 source={require('./FirstLevelCropped.png')} 
             />
             <View style = {styles.tables}>
-                
-                
                 <Canvas style={styles.tables}>
-
-                    
                   {boxArray}
                 </Canvas>
             </View>
@@ -106,7 +94,6 @@ export default function LibFloorPlan(){
     )
 }
 
-
 const styles = StyleSheet.create({
    SafeAreaViewContainer:{
     flex: 1,
@@ -114,13 +101,13 @@ const styles = StyleSheet.create({
     //minHeight: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'white',
-    //backgroundColor: '#ECF0E4'
+    //backgroundColor: 'white',
+    backgroundColor: '#ECF0E4'
    },
-
    background:{
     flex: 1,
     resizeMode: 'contain',
+    backgroundColor: 'pink'
     //margin: '3%'
    },
 
