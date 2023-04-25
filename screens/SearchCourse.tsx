@@ -1,10 +1,12 @@
 import React, {useState, useCallback, useEffect}from 'react';
-import {View, Text as RNText, TouchableOpacity, StyleSheet, Image, ImageBackground} from 'react-native';
+import {View, Text as RNText, Button, TouchableOpacity, StyleSheet, Image, ImageBackground} from 'react-native';
 import NfcManager, {NfcTech} from 'react-native-nfc-manager';
 import { Alert } from 'react-native';
 import axios from 'axios';
 import { Canvas, rect, Rect, Box, SkiaView, Text as SkiaText, useFont, SkFont, FontWeight} from '@shopify/react-native-skia';
 import { SelectList } from 'react-native-dropdown-select-list';
+import  Modal  from 'react-native-modal';
+import LibFloorPlan from './LibFloorPlan';
 
 NfcManager.start();
 
@@ -37,33 +39,13 @@ export default function SearchCourse(){
   visualTableMap.set(1,<Box box={rect(20,350,50,50)}></Box>)
   visualTableMap.set(8,<Box box={rect(100,350,50,50)}></Box>)
   visualTableMap.set(7,<Box box={rect(180,350,50,50)}></Box>)
-
- /* if(font){
-      visualTableMap.set(1,<SkiaText
-          x={20}
-          y={350}
-          text="Table 1"
-          font={font}
-        /> ) 
-        visualTableMap.set(8,<SkiaText
-          x={100}
-          y={350}
-          text="Table 8"
-          font={font}
-        />  
-         ) 
-        visualTableMap.set(7, <SkiaText
-          x={180}
-          y={350}
-          text="Table 7"
-          font={font}
-        />)  
-    } */
-    const [value, setValue] = useState<string | null>(null)
+  
+    const [value, setValue] = useState<string | undefined>()
     const [myTableFilterArray, setMyTableFilterArray] = useState<React.ReactNode[]>([]);
     const [courseArray,setCourseArray] = useState<courses>([])
     const [dropDownCourseArray, setDropDownCourseArray] = useState<coursesN>([])
     const [tableArray, setTableArray] = useState<any[]>([])
+    const [showFloorModal, setShowFloorModal] = useState(false);
 
     let studytables: studytable = []
     
@@ -128,14 +110,6 @@ export default function SearchCourse(){
         setTableArray(uniqueTempArray)
     } 
       
-    const renderLabel = () =>{ 
-            return(
-                <RNText style = {{color: 'black'}}>
-                    Courses
-                </RNText>
-            )
-    }
-
     return(
         <View style={styles.container}>
           <ImageBackground source={require('./Background.png')} style={[styles.imageBackground]}>
@@ -173,11 +147,24 @@ export default function SearchCourse(){
                  
                   {tableArray.map((table) => (
                   <View key={`${table.floorLevel}-${table.tableNum}`}>
+
                     <RNText style={styles.locationText} adjustsFontSizeToFit={true}>    Floor Level: {table.floorLevel}</RNText>
                     <RNText style={styles.locationText} adjustsFontSizeToFit={true}>    Table Number: {table.tableNum}</RNText>
                     <RNText style={styles.locationText} adjustsFontSizeToFit={true}>    Open Seats: {table.openSeats}</RNText>
                     <RNText style={styles.locationText} adjustsFontSizeToFit={true}></RNText>
                   </View>))} 
+              </View>
+              <TouchableOpacity onPress={() => setShowFloorModal(true)}>
+                      <RNText adjustsFontSizeToFit={true}>Show Floor Plan</RNText>
+              </TouchableOpacity>
+              <View style={styles.modalContainer}>
+              <Modal 
+                isVisible={showFloorModal} 
+                backdropColor='#ecf0e4' 
+              >
+                <LibFloorPlan selectedCourse={value}/>
+                <Button title="Close Modal" onPress={() => setShowFloorModal(false)} />
+              </Modal>
               </View>
             </View>
           </ImageBackground>  
@@ -279,6 +266,7 @@ const styles = StyleSheet.create({
   },
   courseText: {
     fontSize: 15,
+
     color: 'black',
     fontWeight: '500'
   },
