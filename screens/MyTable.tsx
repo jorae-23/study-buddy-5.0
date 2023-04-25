@@ -108,6 +108,7 @@ export default function MyTable() {
 
       setHasTable(true)
       setTableNum(tableNum)
+      await setEmptyCourses()
 
       Alert.alert(`You have secured Table ${tableNum} from scanning Tag ${tagNum}.`)
 
@@ -176,7 +177,7 @@ export default function MyTable() {
           setDeviceid(studyTables[i].deviceid);
           setTableNum(studyTables[i].TableNum);
           setTagNum(studyTables[i].TagNum);
-          await setEmptyCourses()
+          //await setEmptyCourses()
           setHasTable(true)
           await getNumOfStudents(studyTables[i].TableNum)
           break;
@@ -242,7 +243,7 @@ export default function MyTable() {
         setStatus('Closed to public.')
       }
       if(coursesAtTable.length> 0){
-        setStatus('Open for studying a course.')
+        setStatus('Open for course studying.')
       }
      }
     }
@@ -256,14 +257,14 @@ export default function MyTable() {
         Alert.alert('Alert for adding a course', `The public will know that ${value} is being studied at table ${tableNum}.`)
         setCoursesAtTable([...coursesAtTable, value])
         setCoursesIamStudying([...coursesIamStudying, value])
-        setStatus('Open for studying a course.')
+        setStatus('Open for course studying.')
       }
     }
 
     async function leaveTable(){
      //logic for removing deviceid from table
       try{
-        await axios.put(`http://44.203.31.97:3001/data/api/remove/deviceId/${tagNum}`)
+         await axios.put(`http://44.203.31.97:3001/data/api/remove/deviceId/${tagNum}`)
       } catch(error){
         console.warn('Error occured after removing device id', error)
       }
@@ -271,7 +272,7 @@ export default function MyTable() {
 
       //logic for labeling seat as open
       try{
-        await axios.put(`http://44.203.31.97:3001/data/api/seats/open/${tagNum}`)
+         await axios.put(`http://44.203.31.97:3001/data/api/seats/open/${tagNum}`)
         setStudentsAtTable(studentsAtTable -1)
       }catch(error){
         console.warn('Occured after opening seat ', error)
@@ -308,7 +309,7 @@ export default function MyTable() {
             if(seatsEmpty == numOfSeats){
               //handleStatus()
               try{
-              await axios.put(`http://44.203.31.97:3001/data/api/Tables/open/${tableNum}`)
+               axios.put(`http://44.203.31.97:3001/data/api/Tables/open/${tableNum}`)
               setCoursesAtTable([])
               }catch( error){
                 console.warn('error occured when updating table to open', error)
@@ -319,6 +320,8 @@ export default function MyTable() {
         i++
       }
       setCoursesIamStudying([])
+      setTagNum(0)
+      setTableNum(0)
       setHasTable(false)
       Alert.alert(`You have left Table ${tableNum}.`)
     }
@@ -339,23 +342,21 @@ export default function MyTable() {
                   <Text style={styles.boxText} adjustsFontSizeToFit={true}>Secure Table</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.box} onPress={leaveTable}>
+                <TouchableOpacity style={styles.box} onPress={() => leaveTable()}>
                   <Text style={styles.boxText} adjustsFontSizeToFit={true}>Leave Table</Text>
                 </TouchableOpacity>
               </View>
-
               <View style={styles.courseContainer}>
                 <View style={styles.titleBox}>
-                  <Text style={styles.titleText} adjustsFontSizeToFit={true}>Table {tableNum} Information</Text>
+                  <Text style={styles.titleText} adjustsFontSizeToFit={true}>Table {tableNum} Information </Text>
                   {/*<Text>Table Number: {tableNum}</Text>*/}
                 </View>
 
                 <View style={styles.courseBoxContainer}>
                   <View style={styles.babyCourseBoxContainer}>
                     <TouchableOpacity style={styles.babyCourseBox} onPress={toggleBroadCastModal}>
-                      <Text style={styles.babyBoxText} adjustsFontSizeToFit={true}>Add a Course</Text>
+                      <Text style={styles.babyBoxText} adjustsFontSizeToFit={true}>Add Course</Text>
                     </TouchableOpacity>
-
                     <Modal 
                       isVisible={showBroadCastModal} 
                       backdropColor='#ecf0e4' 
@@ -490,7 +491,6 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: 20,
     color: 'white',
-    fontWeight: '500',
   },
   courseBoxContainer: {
     flex: 15,
@@ -520,7 +520,6 @@ const styles = StyleSheet.create({
   babyBoxText: {
     flex: 1,
     fontSize: 18, 
-    fontWeight: '500',
     color: 'black',
     textAlign: 'center',
     textAlignVertical: 'center'
@@ -532,8 +531,8 @@ const styles = StyleSheet.create({
   },
   listTitleText: {
     fontSize: 18,
-    fontWeight: '500',
-    color: 'black'
+    color: 'black',
+    fontWeight: 'bold'
   },
   listText: {
     fontSize: 18,
@@ -598,7 +597,6 @@ const styles = StyleSheet.create({
   boxText:{
     flex: 1,
     fontSize: 18, 
-    fontWeight: '500',
     color: 'black',
     textAlign: 'center',
     textAlignVertical: 'center'

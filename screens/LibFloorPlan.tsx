@@ -22,9 +22,14 @@ const screenWidth = width;
 const screenHieght = height;
 
 /* Here i'm thinking a getTableStatus function that takes in a table number, checks the database, if open then return the string "green", else return "red" */
+type myComponentProps = {
+    selectedCourse: string | undefined
+}
 
-export default function LibFloorPlan(){
+
+export default function LibFloorPlan(props: myComponentProps ){
     const [boxColors, setBoxColors] = useState(Array(11).fill(''));
+    const [filteredBoxArray, setFilteredBoxArray] = useState<React.ReactNode[]>([])
     const boxArray = [
         <Box key={1} color={boxColors[0]} box={rrect(rect(screenWidth/2 +86, screenHieght/2 +135, 20, 20), 5, 5)}></Box>,
         <Box key={2} color={boxColors[1]} box={rrect(rect(screenWidth/2 +86, screenHieght/2 +104, 20, 20), 5, 5)}></Box>,
@@ -36,26 +41,41 @@ export default function LibFloorPlan(){
         <Box key={8} color={boxColors[7]} box={rrect(rect(screenWidth/2 +95, screenHieght/2 +41, 10, 10), 3, 3)}></Box>,
         <Box key={9} color={boxColors[8]} box={rrect(rect(screenWidth/2 +95, screenHieght/2 +33, 10, 10), 3, 3)}></Box>,
         <Box key={10} color={boxColors[9]} box={rrect(rect(screenWidth/2 +86, screenHieght/2 -3, 20, 20), 5, 5)}></Box>
-    ]       
+        
+    ]
     useEffect(() =>{
         async function setTableStatus(){
+            let tempFilteredBoxArray:React.ReactNode[] = []
             for(let i = 0; i< boxArray.length;i++){
                 let response = await axios.get(`http://44.203.31.97:3001/data/api/tables/status/${boxArray[i].key}`)
                 let response2 = await axios.get(`http://44.203.31.97:3001/data/api/courses/atTable/${boxArray[i].key}`)
-                let courses = await response2.data[0].Courses
+                let courses:string[] = await response2.data[0].Courses
+                
+                if(props.selectedCourse === undefined){
+                    continue
+                }
+                if(courses.includes(props.selectedCourse)){
+                    setBoxColors(prevState => [...prevState.slice(0, i), '#fbe29c', ...prevState.slice(i+1)]);
+                    tempFilteredBoxArray.push(boxArray[i])
+                    break
+                }
                 const tableStatusFree: boolean =  await response.data[0].TableStatusFree
-                if(tableStatusFree){ //table is open
+
+                if(tableStatusFree && props.selectedCourse === undefined){ //table is open
                     setBoxColors(prevState => [...prevState.slice(0, i), '#86cba6', ...prevState.slice(i+1)]);
                 } else if(!tableStatusFree && courses.length > 0){ //courses are being studied
                     setBoxColors(prevState => [...prevState.slice(0, i), '#fbe29c', ...prevState.slice(i+1)]);
                 }
-                else if(!tableStatusFree && courses.length === 0){
+                else if(!tableStatusFree && courses.length === 0 && props.selectedCourse === undefined){
                     setBoxColors(prevState => [...prevState.slice(0, i), '#ff3d41', ...prevState.slice(i+1)]);
                 }
             }
+            setFilteredBoxArray(tempFilteredBoxArray)
         }
         setTableStatus()
     }, [])
+
+
 
     function refresh(){
         setTableStatus()
@@ -100,8 +120,8 @@ export default function LibFloorPlan(){
 
             <Image style= {styles.floor} source={require('./FirstLevelCropped.png')}/>
             <View style = {styles.tables}>
-                <Canvas style={styles.tables}>
-                    {boxArray}
+                <Canvas style={styles.tables}>      
+                  {props.selectedCourse ? filteredBoxArray: boxArray}
                 </Canvas>
             </View>
 
