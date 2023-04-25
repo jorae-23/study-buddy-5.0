@@ -250,7 +250,6 @@ const styless = StyleSheet.create({
     },
     boxText:{
       fontSize: 18, 
-      fontWeight: '500',
       color: 'black',
       textAlign: 'center'
     },
@@ -308,15 +307,13 @@ const styless = StyleSheet.create({
       marginBottom: '3%'
     },
     dropBoxText1: {
-      fontSize: 19,
-      fontWeight: '600', 
+      fontSize: 19, 
       color: 'black',
       textAlign: 'left'
     },
 
     dropBoxText2: {
       fontSize: 18,
-      fontWeight: '400',
       color: 'black',
       textAlign: 'left'
     },
