@@ -157,7 +157,7 @@ export default function SearchCourse(){
               <TouchableOpacity onPress={() => setShowFloorModal(true)}>
                       <RNText adjustsFontSizeToFit={true}>Show Floor Plan</RNText>
               </TouchableOpacity>
-              <View style={styles.modalContainer}>
+              <View>
               <Modal 
                 isVisible={showFloorModal} 
                 backdropColor='#ecf0e4' 
@@ -268,7 +268,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
 
     color: 'black',
-    fontWeight: '500'
   },
   locationText: {
     fontSize: 15,

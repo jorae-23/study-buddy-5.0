@@ -355,7 +355,7 @@ export default function MyTable() {
                 <View style={styles.courseBoxContainer}>
                   <View style={styles.babyCourseBoxContainer}>
                     <TouchableOpacity style={styles.babyCourseBox} onPress={toggleBroadCastModal}>
-                      <Text style={styles.babyBoxText} adjustsFontSizeToFit={true}>Add a Course</Text>
+                      <Text style={styles.babyBoxText} adjustsFontSizeToFit={true}>Add Course</Text>
                     </TouchableOpacity>
                     <Modal 
                       isVisible={showBroadCastModal} 
@@ -491,7 +491,6 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: 20,
     color: 'white',
-    fontWeight: '500',
   },
   courseBoxContainer: {
     flex: 15,
@@ -521,7 +520,6 @@ const styles = StyleSheet.create({
   babyBoxText: {
     flex: 1,
     fontSize: 18, 
-    fontWeight: '500',
     color: 'black',
     textAlign: 'center',
     textAlignVertical: 'center'
@@ -533,7 +531,6 @@ const styles = StyleSheet.create({
   },
   listTitleText: {
     fontSize: 18,
-    fontWeight: '500',
     color: 'black'
   },
   listText: {
@@ -599,7 +596,6 @@ const styles = StyleSheet.create({
   boxText:{
     flex: 1,
     fontSize: 18, 
-    fontWeight: '500',
     color: 'black',
     textAlign: 'center',
     textAlignVertical: 'center'
