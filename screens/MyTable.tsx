@@ -74,7 +74,7 @@ export default function MyTable() {
   const [deviceid, setDeviceid] = useState('');
   const [hasTable, setHasTable] = useState(false)
   const [tableNum, setTableNum] = useState(0);
-  const [status, setStatus] =  useState('closed')
+  const [status, setStatus] =  useState('Closed to public.')
   const [showAll, setShowAll] = useState(false)
   const [studentsAtTable, setStudentsAtTable] = useState(0)
   const [courseArray,setCourseArray] = useState<courses>([])
@@ -86,7 +86,7 @@ export default function MyTable() {
 
   async function reserveTable() {
     try {
-      Alert.alert('Scan button pressed', 'looking for tag to scan')
+      Alert.alert('Secure table button selected.', 'Looking for tag to scan.')
       
       // register for the NFC tag with NDEF in it
       await NfcManager.requestTechnology(NfcTech.Ndef);
@@ -109,7 +109,7 @@ export default function MyTable() {
       setHasTable(true)
       setTableNum(tableNum)
 
-      Alert.alert(`You have reserved table ${tableNum} from scanning tag ${tagNum}`)
+      Alert.alert(`You have secured Table ${tableNum} from scanning Tag ${tagNum}.`)
 
      // handleTableStatus()
 
@@ -236,7 +236,7 @@ export default function MyTable() {
       const respone =  await axios.get(`http://44.203.31.97:3001/data/api/tables/status/${tableNum}`)
 
       const tableStatus: boolean =  await respone.data[0].TableStatusFree
-      console.warn(tableStatus)
+      //console.warn(tableStatus)
     
       if(tableStatus){
         setStatus('Closed to public.')
@@ -320,7 +320,7 @@ export default function MyTable() {
       }
       setCoursesIamStudying([])
       setHasTable(false)
-      Alert.alert(`You have left table ${tableNum}.`)
+      Alert.alert(`You have left Table ${tableNum}.`)
     }
 
   return(
@@ -360,14 +360,18 @@ export default function MyTable() {
                       isVisible={showBroadCastModal} 
                       backdropColor='#ecf0e4' 
                       style={styles.modalBox}>
-                        <Text style = {{color: 'white', fontSize: 18, fontWeight: '500'}}> Select the class you want to share: </Text>
+                        <Text style = {styles.listTitleText} adjustsFontSizeToFit={true}> Select the class you want to share: </Text>
                         <SelectList
                               setSelected ={(val:string | null) => setValue(val)}
                               data = {dropDownCourseArray}
                               onSelect={addCourseToTable}
-                              save = "value"  
+                              save = "value"
+                              dropdownTextStyles={{color: 'black', fontSize: 18}} 
+                              inputStyles={{color: 'black', fontSize: 18}}    
                         />
-                        <Button title="Close Modal" onPress={() => setShowBroadCastModal(false)} />
+                        <View style={{paddingTop: 10, width: '80%', alignSelf: 'center'}}>
+                          <Button title="Close Modal" onPress={() => setShowBroadCastModal(false)}/>
+                        </View>
                     </Modal>
 
                     <TouchableOpacity style={styles.babyCourseBox} onPress={openToEveryOne}>
@@ -377,13 +381,20 @@ export default function MyTable() {
 
                   <View style={styles.listContainer}>
                   
-                    <Text style={styles.listTitleText}>Status: {status}{'\n'}</Text>
+                    <View style={{flexDirection: 'row'}}>
+                      <Text style={styles.listTitleText} adjustsFontSizeToFit={true}>Status: </Text>
+                      <Text style={styles.listText} adjustsFontSizeToFit={true}>{status}{'\n'}</Text>
+                    </View>
 
-                    <Text style={styles.listTitleText}>Courses:</Text>
+                    <Text style={styles.listTitleText} adjustsFontSizeToFit={true}>Courses:</Text>
                       {renderedData.map((item,index) =>(
-                        <Text key ={index}>{item}</Text> //this puts the courses at a table
-                      ))
-                      }
+                        <View key={index} style={{flexDirection: 'row'}}>
+                        <Text style={{fontSize: 16, lineHeight: 24, paddingRight: 10, color: 'black'}} adjustsFontSizeToFit={true}>
+                          {'\u2022'}
+                        </Text>
+                        <Text style={styles.listText} adjustsFontSizeToFit={true}>{item}</Text>
+                        </View>
+                      ))}
                       {/*
                       {!showAll && (
                         <TouchableOpacity onPress ={() => setShowAll(true)}>
@@ -391,11 +402,16 @@ export default function MyTable() {
                         </TouchableOpacity>
                       )}
                       */}
-                    <Text style={styles.listTitleText}>{'\n'}Study Buddies: {studentsAtTable}{'\n'}</Text>
+                    <View style={{flexDirection: 'row'}}>
+                      <Text style={styles.listTitleText} adjustsFontSizeToFit={true}>{'\n'}Study Buddies: </Text>
+                      <Text style={styles.listText} adjustsFontSizeToFit={true}>{'\n'}{studentsAtTable}{'\n'}</Text>
+                    </View>
 
                     {/*<Text>Seats Occupied: {studentsAtTable}</Text>*/}
-
-                    <Text style={styles.listTitleText}>Seats Available: {seatsFree}</Text>
+                    <View style={{flexDirection: 'row'}}>
+                      <Text style={styles.listTitleText} adjustsFontSizeToFit={true}>Seats Available: </Text>
+                      <Text style={styles.listText} adjustsFontSizeToFit={true}>{seatsFree}{'\n'}</Text>
+                    </View>
                   </View>
                 </View>
               </View>
@@ -406,7 +422,7 @@ export default function MyTable() {
             <ImageBackground source={require('./Background.png')} style={[styles.imageBackground]}>
               <View style={styles.noTableContainer}>
                 <View style={styles.noTableBox}>
-                  <Text style={styles.noTableText}>You have not secured a table yet.{'\n'}Tap the button below to secure a table.</Text>
+                  <Text style={styles.noTableText} adjustsFontSizeToFit={true}>You have not secured a table yet.{'\n'}Tap the button below to secure a table.</Text>
                 </View>
               </View>
 
@@ -518,6 +534,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '500',
     color: 'black'
+  },
+  listText: {
+    fontSize: 18,
+    //fontWeight: '500',
+    color: 'black',
   },
   modalBox: {
     flex: 1,

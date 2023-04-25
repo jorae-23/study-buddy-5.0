@@ -3,7 +3,7 @@ import {View, Text as RNText, TouchableOpacity, StyleSheet, Image, ImageBackgrou
 import NfcManager, {NfcTech} from 'react-native-nfc-manager';
 import { Alert } from 'react-native';
 import axios from 'axios';
-import { Canvas, rect, Rect, Box, SkiaView, Text as SkiaText, useFont, SkFont} from '@shopify/react-native-skia';
+import { Canvas, rect, Rect, Box, SkiaView, Text as SkiaText, useFont, SkFont, FontWeight} from '@shopify/react-native-skia';
 import { SelectList } from 'react-native-dropdown-select-list';
 
 NfcManager.start();
@@ -155,7 +155,7 @@ export default function SearchCourse(){
                   boxStyles={styles.boxStyle}
                   inputStyles={styles.inputStyle}
                   dropdownStyles={styles.dropdownStyle}
-                  dropdownTextStyles={styles.dropDownTextStyle}
+                  dropdownTextStyles={styles.dropDownTextStyle} 
               />
             </View>
 
@@ -164,7 +164,7 @@ export default function SearchCourse(){
             </View>
             <View style={styles.courseContainer}>
               <View style={styles.titleBox}>
-                <RNText style={styles.titleText} adjustsFontSizeToFit={true}>Course Description</RNText>
+                <RNText style={styles.titleText}>Course Description</RNText>
               </View>
               <View style={styles.courseBox}>
                   <RNText style={styles.courseText} adjustsFontSizeToFit={true}>{value}</RNText>
@@ -173,12 +173,11 @@ export default function SearchCourse(){
                  
                   {tableArray.map((table) => (
                   <View key={`${table.floorLevel}-${table.tableNum}`}>
-                    <RNText>    Floor Level: {table.floorLevel}</RNText>
-                    <RNText>    Table Number: {table.tableNum}</RNText>
-                    <RNText>    Open Seats: {table.openSeats}</RNText>
-                    <RNText></RNText>
+                    <RNText style={styles.locationText} adjustsFontSizeToFit={true}>    Floor Level: {table.floorLevel}</RNText>
+                    <RNText style={styles.locationText} adjustsFontSizeToFit={true}>    Table Number: {table.tableNum}</RNText>
+                    <RNText style={styles.locationText} adjustsFontSizeToFit={true}>    Open Seats: {table.openSeats}</RNText>
+                    <RNText style={styles.locationText} adjustsFontSizeToFit={true}></RNText>
                   </View>))} 
-                  
               </View>
             </View>
           </ImageBackground>  
@@ -280,7 +279,12 @@ const styles = StyleSheet.create({
   },
   courseText: {
     fontSize: 15,
-    color: 'black'
+    color: 'black',
+    fontWeight: '500'
+  },
+  locationText: {
+    fontSize: 15,
+    color:'black'
   }
 });
 
