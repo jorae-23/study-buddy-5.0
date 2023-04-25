@@ -145,7 +145,7 @@ export default function WelcomePage(){
       await updateSeatStatus(tagNum)
       await updateTableStatus(tableNum)
       await putUniqueDeviceId(tagNum)
-      Alert.alert(`You have reserved Table ${tableNum} from scanning Tag ${tagNum}.`)
+      Alert.alert(`You have secured Table ${tableNum} from scanning Tag ${tagNum}.`)
 
       handleTableStatus()
 
