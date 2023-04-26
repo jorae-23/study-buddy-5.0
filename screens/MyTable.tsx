@@ -21,6 +21,9 @@ interface courseDescN{
 type courses = courseDesc[]
 
 type coursesN = courseDescN[]
+type myComponentProps = {
+  hasTable: boolean;
+};
 
 
 
@@ -108,7 +111,7 @@ export default function MyTable() {
 
       setHasTable(true)
       setTableNum(tableNum)
-      await setEmptyCourses()
+      //await setEmptyCourses()
 
       Alert.alert(`You have secured Table ${tableNum} from scanning Tag ${tagNum}.`)
 
@@ -161,8 +164,6 @@ export default function MyTable() {
     const numSeatsAtTable:number =  await response.data[0].count
     return numSeatsAtTable
   }
-
-
 
   useEffect(() => {
     async function checkIfUserReservedTable() {
@@ -222,6 +223,7 @@ export default function MyTable() {
     const emptySeats:number = await response.data[0].count
     setSeatsFree(emptySeats)
   }
+  
   useEffect(() =>{
     async function setEmptyCourses(){
       const response = await axios.get(`http://44.203.31.97:3001/data/api/table/emptySeats/${tableNum}`)
@@ -229,7 +231,7 @@ export default function MyTable() {
       setSeatsFree(emptySeats)
     }
     setEmptyCourses()
-  }, [])
+  }, []) 
 
   useEffect(() =>{
     async function handleStatus(){
@@ -262,13 +264,13 @@ export default function MyTable() {
     }
 
     async function leaveTable(){
-     //logic for removing deviceid from table
+      //setHasTable(false)
+      //logic for removing deviceid from table
       try{
          await axios.put(`http://44.203.31.97:3001/data/api/remove/deviceId/${tagNum}`)
       } catch(error){
         console.warn('Error occured after removing device id', error)
       }
-      setDeviceid('')
 
       //logic for labeling seat as open
       try{
@@ -309,7 +311,7 @@ export default function MyTable() {
             if(seatsEmpty == numOfSeats){
               //handleStatus()
               try{
-               axios.put(`http://44.203.31.97:3001/data/api/Tables/open/${tableNum}`)
+                await axios.put(`http://44.203.31.97:3001/data/api/Tables/open/${tableNum}`)
               setCoursesAtTable([])
               }catch( error){
                 console.warn('error occured when updating table to open', error)
