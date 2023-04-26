@@ -8,10 +8,15 @@ import { useNavigation } from '@react-navigation/native';
 
 import {AccordionList} from 'react-native-accordion-list-view';
 import Icon from 'react-native-vector-icons/Ionicons';
+import reserveTable from './MyTable'
+
+
+
 
 NfcManager.start();
 
 export default function WelcomePage(){
+
   const navigation = useNavigation();
 
   function navigateToMyTable() {
@@ -132,6 +137,7 @@ export default function WelcomePage(){
     async function reserveTable() {
     try {
       Alert.alert('Secure table button selected.', 'Looking for tag to scan.')
+      
       
       // register for the NFC tag with NDEF in it
       await NfcManager.requestTechnology(NfcTech.Ndef);
