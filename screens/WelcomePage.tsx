@@ -246,7 +246,7 @@ const styless = StyleSheet.create({
     },
     box:{
       flex: 1, 
-      padding: '3%',
+      padding: 8,
       marginHorizontal: '3%',
       height: '70%',
       width: '100%',

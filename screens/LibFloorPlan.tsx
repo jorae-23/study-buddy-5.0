@@ -67,7 +67,7 @@ export default function LibFloorPlan(props: myComponentProps ){
                     setBoxColors(prevState => [...prevState.slice(0, i), '#fbe29c', ...prevState.slice(i+1)]);
                 }
                 else if(!tableStatusFree && courses.length === 0 && props.selectedCourse === undefined){
-                    setBoxColors(prevState => [...prevState.slice(0, i), '#ff3d41', ...prevState.slice(i+1)]);
+                    setBoxColors(prevState => [...prevState.slice(0, i), '#cc3f3f', ...prevState.slice(i+1)]);
                 }
             }
             setFilteredBoxArray(tempFilteredBoxArray)
@@ -93,7 +93,7 @@ export default function LibFloorPlan(props: myComponentProps ){
                 setBoxColors(prevState => [...prevState.slice(0, i), '#fbe29c', ...prevState.slice(i+1)]);
             }
             else if(!tableStatusFree && courses.length === 0){
-                setBoxColors(prevState => [...prevState.slice(0, i), '#ff3d41', ...prevState.slice(i+1)]);
+                setBoxColors(prevState => [...prevState.slice(0, i), '#cc3f3f', ...prevState.slice(i+1)]);
             }
         }
     }

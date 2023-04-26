@@ -151,21 +151,29 @@ export default function SearchCourse(){
                       <RNText style={styles.locationText} adjustsFontSizeToFit={true}>    Table Number: {table.tableNum}</RNText>
                       <RNText style={styles.locationText} adjustsFontSizeToFit={true}>    Open Seats: {table.openSeats}</RNText>
                       <RNText style={styles.locationText} adjustsFontSizeToFit={true}></RNText>
+
                     </View>))} 
+
+                    <View style={styles.boxContainer}>                    
+                    <TouchableOpacity style={styles.box} onPress={() => setShowFloorModal(true)}>
+                        <RNText  style={styles.boxText} adjustsFontSizeToFit={true}>Show Floor Plan</RNText>
+                    </TouchableOpacity>
+
+                  </View>
                   </ScrollView>
               </View>
-              <TouchableOpacity onPress={() => setShowFloorModal(true)}>
-                      <RNText adjustsFontSizeToFit={true}>Show Floor Plan</RNText>
-              </TouchableOpacity>
+
               <View>
               <Modal 
                 isVisible={showFloorModal} 
-                backdropColor='#ecf0e4' 
+                backdropColor='#ecf0e4'
+                style = {{alignContent: 'center'}} 
               >
                 <LibFloorPlan selectedCourse={value}/>
                 <Button title="Close Modal" onPress={() => setShowFloorModal(false)} />
               </Modal>
               </View>
+
             </View>
           </ImageBackground>  
         </View>   
@@ -244,14 +252,14 @@ const styles = StyleSheet.create({
   titleBox: {
     flex: 1,
     borderRadius: 10,
-    padding: '3%',
+    padding: 10,
     backgroundColor: '#5488a5',
     width: '90%',
     height: '95%',
     alignSelf: 'center'
   },
   titleText: {
-    fontSize: 16.5,
+    fontSize: 18,
     color: 'white',
   },
   courseBox: {
@@ -272,11 +280,27 @@ const styles = StyleSheet.create({
   locationText: {
     fontSize: 15,
     color:'black'
+  },
+  boxContainer: {
+    flex: 0.2,
+    flexDirection: 'row', // sets the child elements to be horizontal 21 294
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    //backgroundColor: '#FFC107'
+  },
+  box:{
+    flex: 1, 
+    padding: 3,
+    //marginHorizontal: '3%',
+    height: '80%',
+    maxWidth: '50%',
+    borderRadius: 10,
+    backgroundColor: '#86cba6',
+    justifyContent: 'center'
+  },
+  boxText:{
+    fontSize: 18, 
+    color: 'black',
+    textAlign: 'center'
   }
 });
-
-/*
-<Canvas style={{width: 400, height: 400}}>
-                {myTableFilterArray}
-</Canvas>
-*/
